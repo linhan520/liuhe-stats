@@ -1,0 +1,3436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>号码斤数统计 · 2026 丙午马年</title>
+<style>
+  :root{
+    --bg:#f4f6f8; --card:#fff; --line:#e3e7ec; --soft:#eef1f5;
+    --text:#1c2430; --muted:#6b7787; --primary:#2563eb;
+    --red:#dc2626; --blue:#2563eb; --green:#0f9d58; --amber:#d97706;
+    --mono:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.55 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:18px 22px 60px}
+  header{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:14px 18px;margin-bottom:16px;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;font-weight:700;font-size:16px;
+    box-shadow:0 4px 12px rgba(37,99,235,.25);
+  }
+  .brand h1{margin:0;font-size:15.5px;font-weight:650}
+  .brand p{margin:1px 0 0;font-size:12px;color:var(--muted)}
+  .badge{
+    font-size:12px;color:#1d4ed8;background:#eaf0ff;border:1px solid #d3e0ff;
+    padding:5px 11px;border-radius:20px;white-space:nowrap;
+  }
+  .hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  #storeBadge[data-tone="shared"]{color:#047857;background:#ecfdf5;border-color:#bbf7d0}
+  #storeBadge[data-tone="local"]{color:#64748b;background:#f8fafc;border-color:#e2e8f0}
+  #saveBadge[data-tone="saving"]{color:#b45309;background:#fffbeb;border-color:#fde68a}
+  #saveBadge[data-tone="ok"]{color:#047857;background:#ecfdf5;border-color:#bbf7d0}
+  #saveBadge[data-tone="fail"]{color:#b91c1c;background:#fef2f2;border-color:#fecaca}
+  #saveBadge[data-tone="local"]{color:#475569;background:#f1f5f9;border-color:#e2e8f0}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px}
+  .card-h{
+    padding:13px 16px;border-bottom:1px solid var(--soft);
+    font-size:13px;font-weight:650;color:#334155;display:flex;
+    align-items:center;justify-content:space-between;gap:10px;
+  }
+  .card-h small{font-weight:400;color:var(--muted);font-size:11.5px}
+
+  .input-card{padding:0;margin-bottom:16px}
+  textarea{
+    width:100%;height:128px;padding:12px 14px;border:1px solid var(--line);
+    border-radius:9px;font-family:var(--mono);font-size:14px;line-height:1.7;
+    background:#fcfdfe;color:var(--text);outline:none;resize:vertical;
+  }
+  textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .body{padding:14px 16px 16px}
+  .hint{font-size:12px;color:var(--muted);margin:9px 0 0;line-height:1.7}  .hint code{
+    font-family:var(--mono);background:#f1f4f9;border:1px solid #e6eaf0;
+    padding:1px 5px;border-radius:4px;font-size:11.5px;color:#334155;
+  }
+  .actions{display:flex;gap:9px;margin-top:13px;flex-wrap:wrap}
+  .btn{
+    border:1px solid var(--line);background:var(--card);color:var(--text);
+    padding:9px 16px;border-radius:9px;font-size:13px;cursor:pointer;
+    transition:.15s;font-family:inherit;
+  }
+  .btn:hover{border-color:#c8d2e0;background:#fafbfd}
+  .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+  .btn.primary:hover{background:#1d4ed8}
+  .btn.ghost{background:transparent;color:var(--muted)}
+  .btn.sm{padding:5px 10px;font-size:12px;border-radius:7px}
+
+  /* 概览 */
+  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .stat span{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px}
+  .stat b{font-size:23px;font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .stat b i{font-size:13px;font-style:normal;color:var(--muted);font-weight:400;margin-left:3px}
+  .stat b input.rate-in{
+    width:78px;font:inherit;font-size:19px;font-weight:650;color:#1c2430;
+    border:1px solid var(--line);border-radius:8px;padding:1px 7px;background:#fff;
+    font-variant-numeric:tabular-nums;text-align:right;
+  }
+  .stat b input.rate-in:focus{outline:none;border-color:#94a3b8;box-shadow:0 0 0 3px rgba(148,163,184,.15)}
+  .stat b small.rate-u{font-size:12.5px;color:var(--muted);font-weight:400;margin-left:4px}
+  /* 斤数下方的金额 */
+  .amt{display:block;font-size:10.5px;color:#94a3b8;font-weight:500;margin-top:2px;white-space:nowrap}
+  .amt b{color:#0f766e;font-weight:650}
+  .rl{font-style:normal;color:#0f766e;font-weight:600}
+
+  /* 表格 */
+  .tbl-wrap{border:1px solid var(--line);border-radius:10px;overflow:auto;background:var(--card)}
+  table{border-collapse:separate;border-spacing:0;width:100%;font-size:12.5px}
+  thead th{
+    position:sticky;top:0;background:#f7f9fc;padding:9px 12px;font-weight:600;
+    color:#475569;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line);
+    font-size:11.5px;
+  }
+  thead th:first-child{text-align:left}
+  th.sortable{cursor:pointer;user-select:none;transition:.12s}
+  th.sortable:hover{color:var(--primary);background:#eef4ff}
+  th.sortable i{font-style:normal;font-size:9px;opacity:.4;margin-left:3px}
+  th.sortable.on{color:#1d4ed8;background:#eef4ff}
+  th.sortable.on i{opacity:1}
+  .sort-tip{font-size:11.5px;color:var(--muted);font-weight:400}
+  .sort-tip b{color:#1f2937;font-family:var(--mono)}
+  tbody td{
+    padding:8px 12px;text-align:right;border-bottom:1px solid var(--line);
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  tbody td:first-child{text-align:left}
+  tbody tr:hover td{background:#fafcff}
+  .no{font-family:var(--mono);font-weight:600;font-size:13px}  .no.r{color:var(--red)} .no.b{color:var(--blue)} .no.g{color:var(--green)}
+  .z{font-weight:600}
+  .mono{font-family:var(--mono);font-size:12px}
+  .jin{font-weight:700;color:#1f2937;font-size:13px}
+  tfoot td{
+    background:#fafbfd;border-top:1px solid var(--line);padding:9px 12px;
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+
+  /* 分布卡 */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+  .dist{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .dist h4{
+    margin:0;padding:11px 14px;font-size:12.5px;font-weight:650;color:#334155;
+    border-bottom:1px solid var(--soft);display:flex;justify-content:space-between;
+  }
+  .dist h4 em{font-style:normal;font-size:11.5px;color:var(--muted);font-weight:400}
+  .dist-body{padding:9px 14px 13px}
+  .row{display:flex;align-items:center;gap:10px;padding:4px 0;font-size:12.5px}
+  .row .k{flex:0 0 68px;color:#3d4a5a;white-space:nowrap}
+  .row .track{flex:1;height:7px;border-radius:4px;background:#f0f3f7;overflow:hidden;min-width:30px}
+  .row .fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#93b4fa,#2563eb)}
+  .row .v{flex:0 0 104px;text-align:right;font-family:var(--mono);font-size:11.5px;color:#475569;white-space:nowrap}
+  .row .v b{color:#1f2937}
+  .row.zero{opacity:.42}
+
+  /* 图表 */
+  .chart-grid{display:grid;grid-template-columns:240px 1fr;gap:18px;align-items:center}
+  @media (max-width:720px){ .chart-grid{grid-template-columns:1fr} }
+  .legend{display:flex;flex-direction:column;gap:9px;font-size:12.5px}
+  .legend div{display:flex;align-items:center;gap:8px}
+  .legend i{width:10px;height:10px;border-radius:3px;flex:0 0 10px}
+  .legend span{color:var(--muted);margin-left:auto;font-family:var(--mono);font-size:11.5px}
+  .vbars{display:flex;align-items:flex-end;gap:14px;height:190px;padding:0 6px}
+  .vbar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+  .vbar .b{width:100%;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,#60a5fa,#2563eb);min-height:2px;transition:.3s}
+  .vbar .lab{font-size:11.5px;color:var(--muted)}
+  .vbar .num{font-size:11px;font-family:var(--mono);color:#475569}
+  .vbar.zero .b{background:#e6eaf0}
+  .vbar.zero .num,.vbar.zero .lab{opacity:.45}
+
+  /* 生肖统计 */
+  .zt-nums{display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-start;white-space:normal}
+  .zt-chip{
+    display:inline-flex;align-items:center;flex-wrap:wrap;gap:0 4px;padding:2px 7px;border-radius:5px;
+    background:#f8fafc;border:1px solid var(--line-soft);line-height:1.6;
+  }
+  .zt-chip b{font-family:var(--mono);font-weight:600;font-size:12px}
+  .zt-chip em{font-style:normal;color:#64748b;font-family:var(--mono);font-size:10.5px}
+  .zt-chip .ca{
+    flex:1 0 100%;text-decoration:none;font-family:var(--mono);font-size:9.5px;
+    color:#0f766e;line-height:1.35;letter-spacing:-.2px;
+  }
+  .pf{
+    display:inline-block;margin-left:4px;padding:0 4px;border-radius:4px;
+    background:#fef3c7;color:#b45309;font-style:normal;font-size:9.5px;
+    font-family:var(--mono);vertical-align:1px;
+  }
+  .zt-bar{display:inline-block;vertical-align:middle;width:72px;height:6px;border-radius:3px;background:#f0f3f7;overflow:hidden;margin-right:6px}
+  .zt-bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#93b4fa,#2563eb)}
+  tbody tr.zt-top td{background:#fffdf5}
+  tbody tr.zt-top:hover td{background:#fffaea}
+
+  .section-h{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;row-gap:6px;
+    margin:22px 0 10px;font-size:13px;font-weight:650;color:#334155;
+  }
+  .section-h small{font-weight:400;font-size:11.5px;color:var(--muted)}
+  .empty{
+    padding:56px 20px;text-align:center;color:var(--muted);font-size:13px;
+    background:var(--card);border:1px dashed var(--line);border-radius:12px;
+  }
+  .err{color:var(--red);font-size:12.5px;margin-top:10px}
+
+  /* 已加入批次 */
+  .hist{margin-top:14px;border-top:1px solid var(--soft);padding-top:12px}
+  .hist-h{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:11.5px;color:var(--muted);margin-bottom:8px;
+  }
+  .hist-h b{color:#1f2937;font-family:var(--mono);font-size:12px}
+  .hist-item{
+    display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:7px;
+    background:#fbfcfe;border:1px solid var(--line-soft);margin-bottom:5px;font-size:11.5px;
+  }
+  .hist-item .idx{
+    flex:0 0 18px;height:18px;border-radius:5px;background:#eef2f7;color:#64748b;
+    display:grid;place-items:center;font-size:10.5px;font-weight:600;
+  }
+  .hist-item code{
+    flex:1;min-width:0;font-family:var(--mono);font-size:11px;color:#334155;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .hist-item .sum{color:#1f2937;font-weight:600;white-space:nowrap;font-family:var(--mono);font-size:11px}
+  .hist-item .del{
+    border:none;background:none;color:#b6c0cc;cursor:pointer;
+    font-size:15px;line-height:1;padding:0 2px;font-family:inherit;
+  }
+  .hist-item .del:hover{color:var(--red)}
+  .ok{color:#0b7a45;font-size:12px;margin-top:10px}
+  .foot{font-size:11.5px;color:#98a4b3;margin-top:26px;line-height:1.8;text-align:center}
+
+  /* ===== 挑码助手 ===== */
+  .pick-card{padding:0;margin:0 0 20px}
+  .pick-body{padding:12px 16px 14px}
+  .pk-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .pk-bar .sp{flex:1}
+  .pk-mode{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:#475569;cursor:pointer;user-select:none}
+  .pk-mode input{accent-color:#2563eb;cursor:pointer}
+  .pk-group{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--soft);align-items:flex-start}
+  .pk-group:last-child{border-bottom:none}
+  #pkGroups{max-height:420px;overflow:auto;padding-right:4px;margin-top:8px}
+  .pk-gname{flex:0 0 84px;font-size:11.5px;color:#8b97a6;padding-top:6px;text-align:right;line-height:1.3}
+  .pk-opts{display:flex;flex-wrap:wrap;gap:5px;flex:1;min-width:0}
+  .pk{
+    border:1px solid var(--line);background:#fbfcfe;color:#334155;cursor:pointer;
+    font:inherit;font-size:11.5px;line-height:1;padding:6px 9px;border-radius:6px;
+    transition:.12s;white-space:nowrap;
+  }
+  .pk:hover{border-color:#bcd0f5;background:#f2f7ff;color:#1d4ed8}
+  .pk.on{background:#2563eb;border-color:#2563eb;color:#fff;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+  .pk.on:hover{background:#1d4ed8;color:#fff}
+  .pk.kill.on{background:#dc2626;border-color:#dc2626;box-shadow:0 2px 6px rgba(220,38,38,.25)}
+  .pk-res{
+    margin-top:10px;padding:10px 12px;border-radius:9px;background:#f8fafc;border:1px solid var(--soft);
+    display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  }
+  .pk-res.killing{background:#fef2f2;border-color:#fecaca}
+  .pk-codes{
+    font-family:var(--mono);font-size:15.5px;letter-spacing:.5px;color:#0f172a;
+    flex:1;min-width:240px;word-break:normal;overflow-wrap:normal;line-height:1.9;
+  }
+  /* 单个号码不许被拆行（窄屏下 "13" 曾被断成 "1" 和 "3"） */
+  .pk-codes .pk-n{display:inline-block;white-space:nowrap}
+  .pk-codes b{color:#2563eb}
+  .pk-res.killing .pk-codes b{color:#dc2626}
+  .pk-codes em{font-style:normal;color:#b6c0cc}
+  .pk-cnt{font-size:12px;color:var(--muted);font-family:var(--mono);white-space:nowrap}
+  .pk-sel{font-size:11.5px;color:#64748b;margin-left:auto;white-space:nowrap}
+  .pk-sel b{color:#1d4ed8;font-weight:600}
+  .pk-tips{font-size:11.5px;color:#9aa6b4;margin-top:8px;line-height:1.7}
+  .pk-n.r{color:#dc2626}
+  .pk-n.b{color:#2563eb}
+  .pk-n.g{color:#0f9d58}
+  .pk-res.killing .pk-n.r,.pk-res.killing .pk-n.b,.pk-res.killing .pk-n.g{color:#b91c1c}
+  .pk-note-msg{font-size:12px;color:#15803d;font-weight:600;min-height:0;line-height:1.6;transition:.15s;opacity:0}
+  .pk-note-msg.on{opacity:1;margin-top:6px}
+  .pk-note{margin-top:10px;border:1px solid var(--soft);border-radius:9px;background:#fcfdff}
+  .pk-note>summary{cursor:pointer;padding:8px 12px;font-size:12px;color:#475569;user-select:none;list-style:none}
+  .pk-note>summary::-webkit-details-marker{display:none}
+  .pk-note>summary:before{content:'▸';display:inline-block;margin-right:6px;color:#94a3b8;transition:.15s}
+  .pk-note[open]>summary:before{transform:rotate(90deg)}
+  .pk-note>summary small{color:#a3aebc;margin-left:8px;font-weight:400}
+  .pk-note-bar{display:flex;gap:8px;padding:0 12px 8px}
+  .pk-note-bar .btn{font-size:11.5px;padding:4px 10px}
+  #pkNoteList{padding:0 8px 8px;max-height:260px;overflow:auto}
+  .pk-note-empty{font-size:11.5px;color:#a3aebc;padding:6px 6px 10px;line-height:1.7}
+  .pk-note-i{display:flex;align-items:center;gap:10px;padding:5px 6px;border-radius:6px;font-size:11.5px;color:#475569}
+  .pk-note-i:nth-child(odd){background:#f6f9fe}
+  .pk-note-t{font-family:var(--mono);color:#94a3b8;white-space:nowrap;font-size:11px}
+  .pk-note-c{color:#1d4ed8;white-space:nowrap;font-weight:600}
+  .pk-note-x{flex:1;min-width:0;font-family:var(--mono);color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+  .pk-note-x:hover{color:#1d4ed8}
+  .pk-note-b{display:flex;gap:4px;flex:none}
+  .pk-note-b button{border:1px solid var(--line);background:#fff;color:#64748b;border-radius:5px;font:inherit;font-size:11px;padding:2px 7px;cursor:pointer}
+  .pk-note-b button:hover{border-color:#bcd0f5;color:#1d4ed8}
+
+  /* ===== 备份弹窗（iOS App 模式无下载器时的兜底） ===== */
+  #bkModal{display:none;position:fixed;inset:0;z-index:9999}
+  .bk-mask{position:absolute;inset:0;background:rgba(15,23,42,.5)}
+  .bk-box{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(92vw,540px);max-height:84vh;display:flex;flex-direction:column;
+    background:#fff;border-radius:14px;padding:14px;
+    box-shadow:0 24px 60px rgba(0,0,0,.28);
+  }
+  .bk-h{font-size:13.5px;font-weight:600;color:#0f172a;margin-bottom:6px;word-break:break-all}
+  .bk-tip{font-size:12px;color:#64748b;line-height:1.65;margin:0 0 8px}
+  #bkText{
+    flex:1;min-height:150px;width:100%;box-sizing:border-box;
+    font-size:12px;line-height:1.5;font-family:ui-monospace,Menlo,Consolas,monospace;
+    color:#334155;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;
+    padding:8px;resize:none;
+  }
+  .bk-btns{display:flex;gap:8px;margin-top:10px}
+  .bk-btns .btn{flex:1}
+  .bk-msg{font-size:12px;color:#047857;margin-top:6px;height:16px}
+
+  /* ===== 结算与风控 ===== */
+  .rk-top{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+  .rk-field{display:flex;flex-direction:column;gap:5px}
+  .rk-field label{font-size:11.5px;color:var(--muted);letter-spacing:.3px}
+  .rk-no{
+    width:96px;box-sizing:border-box;padding:9px 12px;font-size:20px;font-weight:700;
+    font-family:var(--mono);color:#0f172a;text-align:center;
+    border:1px solid #cbd5e1;border-radius:10px;background:#fff;
+  }
+  .rk-no:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .rk-odds{width:74px;box-sizing:border-box;padding:8px 10px;font-size:13px;font-family:var(--mono);
+    border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#0f172a;text-align:center}
+  .rk-odds:focus{outline:none;border-color:#2563eb}
+  #stl-result{flex:1;min-width:260px}
+  .rk-hint{font-size:12px;color:#94a3b8}
+  .rk-res{display:flex;gap:10px;flex-wrap:wrap}
+  .rk-res .c{background:#f8fafc;border:1px solid #e5ebf2;border-radius:10px;padding:8px 12px;min-width:104px}
+  .rk-res .c span{display:block;font-size:11px;color:var(--muted);margin-bottom:3px}
+  .rk-res .c b{font-size:16px;font-family:var(--mono);color:#0f172a}
+  .rk-res .c.win{border-color:#bbf7d0;background:#f0fdf4}
+  .rk-res .c.win b{color:#15803d}
+  .rk-res .c.lose{border-color:#fecaca;background:#fef2f2}
+  .rk-res .c.lose b{color:#b91c1c}
+  .rk-res .c i{font-style:normal;font-size:11px;color:var(--muted);margin-left:2px}
+  .rk-advice{
+    margin-top:10px;font-size:12.5px;line-height:1.7;color:#334155;
+    background:#f8fafc;border-left:3px solid #2563eb;border-radius:0 8px 8px 0;padding:9px 12px;
+  }
+  .rk-advice b{color:#b91c1c}
+  .rk-advice em{font-style:normal;font-family:var(--mono);color:#0f172a;font-weight:600}
+  .rk-scroll{max-height:340px;overflow:auto;border-radius:10px}
+  .rk-scroll table{font-size:12.5px}
+  .rk-scroll thead th{position:sticky;top:0;z-index:1;background:#f4f7fb}
+  tr.rk-danger td{background:#fef2f2}
+  tr.rk-danger td.mono{color:#b91c1c;font-weight:600}
+  tr.rk-warn td{background:#fffbeb}
+  .rk-tag{display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:20px;line-height:1.6}
+  .rk-tag.d{background:#fee2e2;color:#b91c1c}
+  .rk-tag.w{background:#fef3c7;color:#b45309}
+  .rk-tag.s{background:#dcfce7;color:#15803d}
+  .rk-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:10px}
+  .rk-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
+  /* 平特多选：一期可开多个生肖，重复只赔一次 */
+  .rk-top #stl-result{flex:1 1 100%;margin-top:2px}
+  .rk-ptpick{display:flex;flex-direction:column;gap:6px;margin-top:2px;min-width:0}
+  .rk-ptpick .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .pt-chip{font:inherit;font-size:12.5px;padding:5px 11px;border-radius:20px;cursor:pointer;
+    border:1px solid #e2e8f0;background:#f8fafc;color:#475569;transition:.12s;user-select:none}
+  .pt-chip:hover{border-color:#cbd5e1;background:#f1f5f9}
+  .pt-chip.on{background:#7f1d1d;border-color:#7f1d1d;color:#fff;font-weight:600}
+  .pt-chip.on.zero{background:#1e293b;border-color:#1e293b}
+  .pt-chip small{opacity:.7;font-family:var(--mono);margin-left:3px}
+  .pt-chip-sep{display:inline-flex;align-items:center;padding:0 2px;font-size:11px;color:#94a3b8;letter-spacing:1px}
+  .pt-tail-nums{display:block;font-size:10px;color:#b45309;font-family:var(--mono);margin-top:1px;letter-spacing:0}
+  .pt-chip-hint{font-size:11.5px;color:#94a3b8}
+  .pt-chip-hint b{color:#b91c1c;font-family:var(--mono)}
+  .rk-ptlist{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .rk-ptlist .pc{background:#f8fafc;border:1px solid #e5ebf2;border-radius:9px;padding:6px 10px;font-size:12px}
+  .rk-ptlist .pc b{font-family:var(--mono);color:#0f172a;margin-left:4px}
+  .rk-ptlist .pc.zero{border-style:dashed;color:#94a3b8}
+  .rk-sum{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid #e5ebf2;font-size:12.5px;line-height:1.8}
+  .rk-sum b{font-family:var(--mono)}
+  .rk-sum .bad{color:#b91c1c}
+  /* 风险口径开关：号码 / 号码＋平特 */
+  .rk-switch{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:20px;cursor:pointer;
+    border:1px solid #cbd5e1;background:#f8fafc;color:#475569;transition:.15s;white-space:nowrap}
+  .rk-switch:hover{border-color:#94a3b8}
+  .rk-switch.on{background:#0f172a;border-color:#0f172a;color:#fff;font-weight:600}
+  .rk-switch i{font-style:normal;opacity:.75;margin-right:4px}
+  .rk-off td.ptcol{opacity:.45}
+  .rk-note{font-size:11.5px;color:#b45309;margin-top:6px}
+  .pt-sub{display:block;font-size:10.5px;color:#94a3b8;font-weight:400;margin-top:2px;letter-spacing:0}
+  .section-h .rk-switch{margin-left:auto}
+  .section-h .rk-switch + small{margin-left:10px}
+
+  /* 单个号手动修正 */
+  .adj-bar{
+    display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:10px;
+    background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:8px 12px;
+  }
+  .adj-bar .lb{font-size:11.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+  .adj-bar label{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);white-space:nowrap}
+  .adj-in{
+    width:4.6em;font:inherit;font-family:var(--mono);font-size:13px;padding:4px 7px;border-radius:6px;
+    border:1px solid var(--line);background:#fff;color:#0f172a;outline:none;
+  }
+  .adj-in:focus{border-color:#2563eb}
+  .adj-in.adj-d{width:5.6em}
+  .adj-in.adj-n{width:11em;text-align:left;letter-spacing:.4px}
+  .adj-in.adj-z{width:3.6em;text-align:center;font-family:inherit;font-size:14px}
+  .adj-in.adj-zs{width:8.5em;text-align:left;font-family:inherit;font-size:13px;letter-spacing:1px}
+  .adj-bar #adjok, .adj-bar #ptadjok{
+    font:inherit;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;
+    border:1px solid #2563eb;background:#2563eb;color:#fff;cursor:pointer;
+  }
+  .adj-bar #adjok:hover, .adj-bar #ptadjok:hover{background:#1d4ed8}
+  .adj-prev{font-size:11.5px;color:#94a3b8;font-family:var(--mono);white-space:nowrap}
+  .adj-prev b{color:#0f172a}
+  .adj-prev.bad{color:#b91c1c}
+  .adj-prev.ok{color:#15803d}
+  .adj-prev.ok b{color:#15803d}
+  .adj-list{font-size:11px;color:#94a3b8;white-space:nowrap}
+  .adj-chip{
+    font:inherit;font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:999px;
+    border:1px solid #fcd9a8;background:#fff7ed;color:#b45309;cursor:pointer;margin-left:5px;
+  }
+  .adj-chip:hover{background:#ffedd5;border-color:#f59e0b}
+  .adj-chip i{font-style:normal;margin-left:4px;color:#c2410c;font-weight:700}
+  .adj-chip.adj-chip-clr{background:#fef2f2;border-color:#fecaca;color:#b91c1c;font-weight:600}
+  .adj-chip.adj-chip-clr:hover{background:#fee2e2;border-color:#f87171}
+  tr.adj-row{background:rgba(251,146,60,.08)}
+  .adj-flag{
+    font-style:normal;font-size:9.5px;color:#b45309;background:#fff7ed;border:1px solid #fcd9a8;
+    border-radius:4px;padding:0 3px;margin-left:4px;vertical-align:1px;cursor:help;
+  }
+  /* 打平线的算式小字 */
+  .limit-expr{font-family:var(--mono);font-size:10.5px;color:#94a3b8;font-weight:400;letter-spacing:0}
+  /* 单个号斤数 ×47 的赔付额 */
+  .x47{display:block;font-size:10.5px;color:#94a3b8;font-weight:400;margin-top:1px;letter-spacing:0}
+  /* 平特斤数的批次来源（只显示，不点） */
+  .pt-src{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
+  .pt-src span{
+    font:inherit;font-family:var(--mono);font-size:9.5px;line-height:1.6;letter-spacing:0;
+    color:#94a3b8;background:#f8fafc;border:1px solid #eef2f6;border-radius:4px;
+    padding:0 4px;white-space:nowrap;
+  }
+  /* 多开账本 */
+  .ws-open{
+    display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:11.5px;line-height:1.6;
+    padding:2px 8px;border-radius:6px;border:1px solid #cbd5e1;background:#fff;color:#334155;cursor:pointer;
+  }
+  .ws-open:hover{border-color:#94a3b8;background:#f8fafc}
+  .ws-open.is-alt{border-color:#2563eb;background:#eff6ff;color:#1d4ed8}
+  .ws-open i{font-style:normal;font-size:10px;color:#94a3b8;border-left:1px solid #e2e8f0;padding-left:6px}
+  .ws-panel{
+    position:absolute;right:0;top:calc(100% + 8px);z-index:60;width:340px;text-align:left;
+    background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 15px;
+    box-shadow:0 14px 40px rgba(15,23,42,.14);
+  }
+  .ws-h{font-size:12.5px;font-weight:700;color:#0f172a;margin-bottom:6px}
+  .ws-tip{font-size:11px;line-height:1.65;color:#64748b;margin:0 0 10px}
+  .ws-tip code{font-family:var(--mono);background:#f1f5f9;border-radius:3px;padding:0 3px;color:#0f766e}
+  .ws-tip2{margin-top:-6px;font-size:10.5px;color:#94a3b8}
+  .ws-tip2 b{color:#dc2626}
+  .ws-row{display:flex;gap:6px}
+  .ws-in{
+    flex:1 1 auto;min-width:0;font:inherit;font-size:12px;padding:5px 8px;border-radius:7px;
+    border:1px solid var(--line);background:#fff;color:#0f172a;outline:none;
+  }
+  .ws-in:focus{border-color:#2563eb}
+  .ws-go{
+    flex:0 0 auto;font:inherit;font-size:12px;font-weight:600;padding:5px 11px;border-radius:7px;
+    border:1px solid #2563eb;background:#2563eb;color:#fff;cursor:pointer;
+  }
+  .ws-go:hover{background:#1d4ed8}
+  .ws-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+  .ws-chip{display:inline-flex;align-items:stretch;border:1px solid #e2e8f0;border-radius:5px;overflow:hidden;background:#f8fafc}
+  .ws-chip.on{border-color:#2563eb;background:#eff6ff}
+  .ws-chip button{
+    font:inherit;font-family:var(--mono);font-size:10.5px;padding:2px 7px;border:0;background:transparent;color:#475569;cursor:pointer;
+  }
+  .ws-chip button:hover{background:#eff6ff;color:#1d4ed8}
+  .ws-chip.on button{color:#1d4ed8;font-weight:600}
+  .ws-chip .ws-x{
+    padding:2px 5px;border-left:1px solid #e2e8f0;color:#94a3b8;font-family:inherit;font-weight:700;
+  }
+  .ws-chip .ws-x:hover{background:#fef2f2;color:#dc2626;border-left-color:#fecaca}
+  .ws-chip .ws-x.arm{background:#dc2626;color:#fff;border-left-color:#dc2626;padding:2px 6px}
+  .ws-foot{display:flex;align-items:center;gap:8px;margin-top:11px;padding-top:9px;border-top:1px solid #f1f5f9}
+  .ws-mini{font:inherit;font-size:10.5px;padding:2px 8px;border-radius:5px;border:1px solid #e2e8f0;background:#fff;color:#64748b;cursor:pointer}
+  .ws-mini:hover{border-color:#94a3b8;color:#334155}
+  .ws-msg{font-size:10.5px;color:#0f766e}
+  .ws-gone{
+    position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:200;
+    background:#0f172a;color:#fff;font-size:12.5px;line-height:1.5;
+    padding:9px 16px;border-radius:8px;box-shadow:0 8px 24px rgba(15,23,42,.25);
+    animation:wsGoneIn .18s ease-out;max-width:calc(100vw - 40px);
+  }
+  .ws-gone b{color:#fca5a5;font-weight:600}
+  @keyframes wsGoneIn{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+  /* 账本被别处删掉后盖的那一层 */
+  .ws-dead{
+    position:fixed;inset:0;z-index:300;background:rgba(248,250,252,.955);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+  }
+  .ws-dead-box{
+    max-width:430px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;
+    padding:22px 24px;box-shadow:0 20px 50px rgba(15,23,42,.16);
+  }
+  .ws-dead-h{font-size:15px;font-weight:700;color:#0f172a;margin-bottom:8px}
+  .ws-dead-p{font-size:12.5px;line-height:1.75;color:#64748b;margin:0 0 16px}
+  #wsDeadBack{
+    font:inherit;font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:8px;
+    border:1px solid #2563eb;background:#2563eb;color:#fff;cursor:pointer;
+  }
+  #wsDeadBack:hover{background:#1d4ed8}
+  header{position:relative}
+  .hdr-right{position:relative}
+
+/* ===== 移动端 / iOS 适配（由 pack/build-mobile.mjs 注入，改桌面样式不受影响） ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  -webkit-tap-highlight-color:transparent;
+  overscroll-behavior-y:contain;
+  /* 刘海屏 / 灵动岛：顶部让出状态栏，左右让出圆角，底部让出手势条 */
+  padding-top:env(safe-area-inset-top, 0px);
+  padding-left:env(safe-area-inset-left);
+  padding-right:env(safe-area-inset-right);
+}
+.wrap{padding-left:12px;padding-right:12px;padding-bottom:calc(48px + env(safe-area-inset-bottom))}
+/* iOS 上小于 16px 的输入框会被自动放大，强制 16 */
+textarea,input,select{font-size:16px !important}
+.btn{min-height:38px;display:inline-flex;align-items:center;justify-content:center}
+@media (max-width:740px){
+  .wrap{padding:8px 10px calc(44px + env(safe-area-inset-bottom));max-width:none}
+  .card{border-radius:10px}
+  .card-h{padding:10px 12px;font-size:13.5px}
+  .card-h small{display:block;margin-left:0;margin-top:2px}
+  /* 页头压缩：说明文字去掉，logo 缩小，App 内「数据存放位置」永远是本机，没信息量 */
+  header .brand p{display:none}
+  header .brand .logo{width:34px;height:34px;font-size:16px;border-radius:9px}
+  header .brand h1{font-size:16px;white-space:nowrap}
+  header .brand>div{min-width:0;flex:1}
+  .hdr-right{gap:5px}
+  .hdr-right .badge{font-size:10.5px;padding:2px 7px}
+  /* 只留「已保存 时:分:秒」，其余徽标手机上没信息量，留着挤标题 */
+  header .hdr-right .badge:not(#saveBadge){display:none}
+  .input-card textarea{min-height:120px}
+  table{font-size:12px}
+  th,td{padding:6px 7px}
+  /* 表格不挤压，宁可横向滑动 */
+  .tbl-wrap table{min-width:540px}
+  .tbl-wrap{-webkit-overflow-scrolling:touch}
+  /* 输入规则默认折叠两行，点一下展开 */
+  .input-card .hint.collapsed{
+    max-height:4.6em;overflow:hidden;
+    -webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);
+            mask-image:linear-gradient(180deg,#000 55%,transparent);
+  }
+  .hint-toggle{
+    margin:6px 0 0;padding:5px 0;border:none;background:none;
+    color:var(--primary);font-size:13px;font-weight:600;
+  }
+  /* 主按钮占宽，次要按钮并排 */
+  .actions .btn.primary{flex:1 1 46%}
+  /* 挑码助手在手机上不限制高度，靠整页滚动 */
+  #pkGroups{max-height:none !important;overflow:visible !important}
+  .pk-bar{flex-wrap:wrap;gap:6px}
+  .pk-res{flex-direction:column;align-items:stretch;gap:6px}
+  .pk-codes{font-size:14px;line-height:1.8}
+  /* 条件行保持横向：左边窄标签、右边 chips 自动换行 */
+  .pk-group{flex-direction:row;gap:8px;padding:5px 0}
+  .pk-gname{flex:0 0 50px;font-size:11px;padding-top:5px;text-align:left;line-height:1.2}
+  .pk-opts{gap:5px}
+  .row{gap:8px}
+  .row .k{flex:0 0 58px;font-size:12px}
+  .row .v{flex:0 0 80px;font-size:11px}
+  .chart-grid{grid-template-columns:1fr !important}
+}
+</style>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="号码斤数">
+<meta name="theme-color" content="#2563eb">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="logo">Σ</div>
+      <div>
+        <h1>号码斤数统计</h1>
+        <p>每个号多少斤 · 加入批次自动累计 · 起服务后同网多机共用一份数据</p>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="badge">2026-02-17 起生效</div>
+      <div class="badge" id="storeBadge" title="数据存放位置">本机浏览器存储</div>
+      <div class="badge" id="saveBadge" data-tone="local" title="最后一次写盘状态">尚未保存</div>
+      <button type="button" class="ws-open" id="wsOpenBtn" title="开多个窗口，各用一套独立数据">
+        <span id="wsBadge">主账本</span><i>多开</i>
+      </button>
+      <div class="ws-panel" id="wsPanel" hidden>
+        <div class="ws-h">多开 · 每个账本一套独立数据</div>
+        <p class="ws-tip">新窗口地址带 <code>?ws=名字</code>，不同名字的本机数据和服务器文件都分开，互不同步、互不覆盖。不带参数就是现在这个主账本。</p>
+        <p class="ws-tip ws-tip2">关闭多开：直接关掉那个窗口就行，数据留着、下次点标签还能开回来；标签右边点 <b>×</b> 才是把这个账本连同数据一起删掉（点两下确认）——那边正开着它的窗口会跟着退出，断网也一样。</p>
+        <div class="ws-row">
+          <input id="wsName" class="ws-in" type="text" maxlength="20" placeholder="账本名：pan2 / 客户a" autocomplete="off">
+          <button type="button" class="ws-go" id="wsGoBtn">新窗口打开</button>
+        </div>
+        <div class="ws-list" id="wsList"></div>
+        <div class="ws-foot">
+          <button type="button" class="ws-mini" id="wsCopyBtn">复制当前地址</button>
+          <span class="ws-msg" id="wsMsg"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="card input-card">
+      <div class="card-h">输入号码与斤数 <small>每行一批，自动累加</small></div>
+      <div class="body">
+        <textarea id="input" spellcheck="false" placeholder="28.40.26.29.24.48.13.19.23各5&#10;23.05.17.29.15.27.10.22.12.24.07.19.31.09.21.13.25各数5"></textarea>
+        <p class="hint">
+          <b>分隔符随便</b>：点 <code>.</code>、逗号、空格、顿号、竖线、换行、直接连写都认，
+          像 <code>01 02 08 11 13 16 43各70</code> 这种没有点的直接贴就行。<br>
+          <b>多行 = 多批</b>，自动合并累加，同一个号跨批叠加斤数。<br>
+          整批同斤数：行尾写 <code>各5</code> / <code>各数5</code> / <code>每个5</code>；
+          <b>中文数字也认</b>：<code>狗猴马羊猪蛇各数五</code> = 这 6 肖每号 5 斤，
+          <code>各数十五</code>、<code>各二十五</code>、<code>各一百</code> 都行；
+          单号不同斤数：<code>28x8</code>、<code>40x3</code>；不写默认 1 斤。<br>
+          <b>生肖/条件也能直接写</b>：<code>马兔各数10</code>、<code>红单各5</code>（红波单数全部号）、
+          <code>内围码各2</code>、<code>1门各10</code>、<code>0头单各3</code>，149 个条件名全认。<br>
+          <b>「各N」只管它前面那一段</b>：<code>虎各号10。41/60 26 34各20</code>
+          = 虎 4 号各 10 斤 + 41 号 60 斤 + 26、34 各 20 斤。<br>
+          <b>斜杠表示斤数</b>：<code>41/60</code> = 41 号 60 斤（<code>41x60</code> 同一个意思）；
+          号码之间请用 <code>.</code> 空格 逗号 顿号 隔开。<br>
+          <b>平特单独算</b>：<code>平兔300</code> = 平特兔 300 斤、<code>平特兔猴各300</code> = 平特兔 300 ＋ 平特猴 300；
+          平特只进平特统计，不摊到号码、也不算进生肖斤数。<br>
+          <b>平特尾数</b>：<code>平特8尾5</code> / <code>平特8尾5各数</code> / <code>平特尾8 5</code>
+          = 平特 8 尾押 5 斤（整尾一个注，覆盖 8/18/28/38/48，开出任意一个就赔）。倍数跟马一样 ×1.8 含退本。
+        </p>
+      <div class="actions">
+        <button class="btn primary" id="go">加入批次</button>
+        <button class="btn" id="export">导出备份</button>
+        <button class="btn" id="import">导入备份</button>
+        <button class="btn ghost" id="clear">清空全部</button>
+        <input type="file" id="file" accept=".json,application/json" hidden>
+      </div>
+      <div id="msg"></div>
+      <div id="history"></div>
+      </div>
+  </section>
+
+  <div id="out">
+    <div class="empty">输入号码后点「开始统计」</div>
+  </div>
+
+  <p class="foot">
+    数据来源：2026 丙午马年生肖灵码表（2026-02-17 启用）· 号码生肖按马年逆序排列<br>
+    按灵码表换算每个号的生肖 / 波色 / 五行，统计各级别占用的斤数
+  </p>
+
+  <section class="card pick-card">
+      <div class="card-h">挑码助手 <small>本地数据 · 149 个条件 · 选属性直接挑号，不联网</small></div>
+      <div class="pick-body">
+        <div class="pk-bar">
+          <button class="btn primary" id="pkFill">填入输入框</button>
+          <button class="btn" id="pkCopy">复制结果</button>
+          <button class="btn" id="pkNoteSave">存到记事本</button>
+          <button class="btn" id="pkSave">存成 txt</button>
+          <button class="btn ghost" id="pkClear">清空</button>
+          <span class="sp"></span>
+          <label class="pk-mode"><input type="checkbox" id="pkKill"> 杀码（剔掉）</label>
+          <label class="pk-mode"><input type="checkbox" id="pkAnd"> 同组取交集</label>
+        </div>
+        <div class="pk-res" id="pkRes">
+          <div class="pk-codes" id="pkCodes">—</div>
+          <div class="pk-cnt" id="pkCnt"></div>
+          <div class="pk-sel" id="pkSel"></div>
+        </div>
+        <div class="pk-note-msg" id="pkNoteMsg"></div>
+        <div id="pkGroups"></div>
+        <details class="pk-note" id="pkNoteWrap">
+          <summary>记事本 <span id="pkNoteSum">（空）</span><small>存在本机，离线可看</small></summary>
+          <div class="pk-note-bar">
+            <button type="button" class="btn ghost" id="pkNoteExport">导出记事本</button>
+            <button type="button" class="btn ghost" id="pkNoteClear">清空记事本</button>
+          </div>
+          <div id="pkNoteList"></div>
+        </details>
+        <div class="pk-tips">
+          点属性即筛号：<b>不同类型取交集</b>（同时满足），<b>同一类默认取并集</b>（多选就是「或」），跟线上挑码助手一个口径；勾上「同组取交集」就要求同类条件也同时成立。<br>
+          单双、大小 是组内单选，点一个换一个。勾「杀码」= 反过来，把挑出来的号从 1–49 里剔掉。号码按波色分红蓝绿。<br>
+          条件表 149 项与线上 <code>tool/chooseNumber</code> 逐项比对过（2026-10-23），全程读本地数据，断网也能用。
+        </div>
+      </div>
+  </section>
+</div>
+
+<script>
+/* ============ 0. 多开账本 ============
+   同一台机开多个窗口，每个窗口地址带不同的 ?ws=名字，
+   浏览器本地存储和服务器数据文件都各自独立，互不同步、互不覆盖。
+   不带 ?ws= → 用原来的默认账本（data.json），行为跟以前完全一样。
+*/
+const RAW_LS = (function(){ try { return window.localStorage; } catch(e){ return null; } })();
+const WS = (function(){
+  let raw = '';
+  try { raw = new URLSearchParams(location.search).get('ws') || ''; } catch(e){}
+  raw = String(raw).trim().toLowerCase();
+  return /^[a-z0-9_-]{1,20}$/.test(raw) ? raw : '';
+})();
+const LSX = {
+  getItem(k){ try { return RAW_LS ? RAW_LS.getItem(WS ? 'liuhe@' + WS + ':' + k : k) : null; } catch(e){ return null; } },
+  setItem(k, v){ try { if (RAW_LS) RAW_LS.setItem(WS ? 'liuhe@' + WS + ':' + k : k, v); } catch(e){} },
+  removeItem(k){ try { if (RAW_LS) RAW_LS.removeItem(WS ? 'liuhe@' + WS + ':' + k : k); } catch(e){} }
+};
+const wsQS = WS ? ('?ws=' + encodeURIComponent(WS)) : '';
+
+/* ============ 0.1 跨窗口联动：账本被删，同源其他窗口一起收摊 ============
+   三条通道全本地，不依赖服务器，断网 / 服务没起也照样通知：
+     1) BroadcastChannel        —— 最快，现代浏览器
+     2) localStorage storage 事件 —— 跨窗口，老浏览器兜底
+     3) 墓碑 key 轮询            —— 前两条都不触发时的最后保险（每 1.5 秒看一眼）
+   墓碑带时间戳，比本窗口的启动时刻新才算数 —— 删完再新建同名账本不会被误杀。 */
+const WS_BORN = Date.now();
+const WS_BUS = 'liuhe@bus';                 // 裸 key，故意不带账本前缀
+const WS_TOMB = 'liuhe_deleted_';           // 裸 key + 账本名
+const WS_STATE = { dead: false };
+
+function wsTombKey(name){ return WS_TOMB + name; }
+
+function wsMarkDeleted(name){
+  const t = Date.now();
+  try { if (RAW_LS) RAW_LS.setItem(wsTombKey(name), String(t)); } catch(e){}
+  const msg = { type: 'ws-delete', ws: name, t };
+  try {
+    if (window.BroadcastChannel){
+      const bc = new BroadcastChannel('liuhe_ws');
+      bc.postMessage(msg);
+      bc.close();
+    }
+  } catch(e){}
+  try { if (RAW_LS) RAW_LS.setItem(WS_BUS, JSON.stringify(msg)); } catch(e){}
+}
+
+/* 本窗口的账本没了 —— 能关就关窗口；关不掉就原地盖一层说明（离线也不依赖网络） */
+function wsDie(){
+  if (WS_STATE.dead || !WS) return;
+  WS_STATE.dead = true;                       // 先停写，别再往盘里推
+  /* exe 里 window.close() 有时不生效，走主进程 IPC 关；浏览器里没这个对象，照旧 */
+  let asked = false;
+  try {
+    if (window.liuheDesktop && window.liuheDesktop.closeSelf){
+      window.liuheDesktop.closeSelf();
+      asked = true;
+    }
+  } catch(e){}
+  if (!asked){ try { window.close(); } catch(e){} }
+  setTimeout(() => { try { wsDeadMask(); } catch(e){} }, 350);
+}
+
+function wsDeadMask(){
+  const dir = location.pathname.replace(/[^/]*$/, '');
+  const file = location.pathname.slice(dir.length) || 'index.html';
+
+  if (!document.getElementById('wsDeadMask')){
+    const d = document.createElement('div');
+    d.id = 'wsDeadMask';
+    d.className = 'ws-dead';
+    d.innerHTML = `<div class="ws-dead-box">
+      <div class="ws-dead-h">账本「${WS}」已关闭</div>
+      <p class="ws-dead-p">这个账本已经在另一个窗口被删掉，数据一起清了。<br>
+      本窗口已经停止保存，不会再把它写回去。</p>
+      <button type="button" id="wsDeadBack">回主账本</button>
+    </div>`;
+    document.body.appendChild(d);
+    document.getElementById('wsDeadBack').addEventListener('click', () => {
+      location.href = dir + file + '?wsgone=' + encodeURIComponent(WS);
+    });
+  }
+  /* 联网状态下顺手跳回主账本；离线就留在这一层，等网络回来自行点按钮 */
+  if (navigator.onLine !== false){
+    setTimeout(() => {
+      try {
+        if (document.getElementById('wsDeadMask')) location.replace(dir + file + '?wsgone=' + encodeURIComponent(WS));
+      } catch(e){}
+    }, 2600);
+  }
+}
+
+(function wsBind(){
+  if (!WS) return;
+  const onMsg = m => {
+    if (!m || m.type !== 'ws-delete') return;
+    if (String(m.ws || '').toLowerCase() !== WS) return;
+    if ((+m.t || 0) >= WS_BORN) wsDie();
+  };
+  try {
+    if (window.BroadcastChannel){
+      const bc = new BroadcastChannel('liuhe_ws');
+      bc.onmessage = e => onMsg(e.data);
+    }
+  } catch(e){}
+  window.addEventListener('storage', e => {
+    if (e.key === WS_BUS && e.newValue){ try { onMsg(JSON.parse(e.newValue)); } catch(err){} }
+    else if (e.key === wsTombKey(WS) && e.newValue) wsDie();
+  });
+  setInterval(() => {
+    if (WS_STATE.dead || !RAW_LS) return;
+    const t = Number(RAW_LS.getItem(wsTombKey(WS)) || 0);
+    if (t && t > WS_BORN) wsDie();
+  }, 1500);
+})();
+
+/* ============ 1. 数据层：2026 丙午马年灵码表 ============ */
+const ZODIAC = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+
+/* 平特尾数：10 个尾，平特里统一写成「尾8」（号码条件那边是「8尾」，两边别混） */
+const PT_TAILS = Array.from({length:10}, (_, i) => '尾' + i);
+const isPtTail = k => typeof k === 'string' && /^尾[0-9]$/.test(k);
+/* 这一尾包含哪几个号 */
+const tailNums = t => {
+  const d = +String(t).replace('尾','');
+  const out = [];
+  for (let n = 1; n <= 49; n++) if (n % 10 === d) out.push(n);
+  return out;
+};
+
+// 马年为当年生肖，占 01/13/25/37/49，其余生肖逆序各 4 个
+/* ==== 条件词典（由挑码助手实测生成，勿手改）==== */
+const COND = {"左肖":[2,3,6,7,10,11,14,15,18,19,22,23,26,27,30,31,34,35,38,39,42,43,46,47],"右肖":[1,4,5,8,9,12,13,16,17,20,21,24,25,28,29,32,33,36,37,40,41,44,45,48,49],"前肖":[2,3,4,5,6,7,14,15,16,17,18,19,26,27,28,29,30,31,38,39,40,41,42,43],"后肖":[1,8,9,10,11,12,13,20,21,22,23,24,25,32,33,34,35,36,37,44,45,46,47,48,49],"独字肖":[1,4,5,6,7,12,13,16,17,18,19,24,25,28,29,30,31,36,37,40,41,42,43,48,49],"合字肖":[2,3,8,9,10,11,14,15,20,21,22,23,26,27,32,33,34,35,38,39,44,45,46,47],"天肖":[1,3,4,6,8,11,13,15,16,18,20,23,25,27,28,30,32,35,37,39,40,42,44,47,49],"地肖":[2,5,7,9,10,12,14,17,19,21,22,24,26,29,31,33,34,36,38,41,43,45,46,48],"阴肖":[1,2,3,7,8,9,13,14,15,19,20,21,25,26,27,31,32,33,37,38,39,43,44,45,49],"阳肖":[4,5,6,10,11,12,16,17,18,22,23,24,28,29,30,34,35,36,40,41,42,46,47,48],"单":[1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49],"双":[2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48],"大":[25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49],"小":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24],"合单":[1,3,5,7,9,10,12,14,16,18,21,23,25,27,29,30,32,34,36,38,41,43,45,47,49],"大单":[25,27,29,31,33,35,37,39,41,43,45,47,49],"小单":[1,3,5,7,9,11,13,15,17,19,21,23],"合双":[2,4,6,8,11,13,15,17,19,20,22,24,26,28,31,33,35,37,39,40,42,44,46,48],"大双":[26,28,30,32,34,36,38,40,42,44,46,48],"小双":[2,4,6,8,10,12,14,16,18,20,22,24],"合大":[7,8,9,16,17,18,19,25,26,27,28,29,34,35,36,37,38,39,43,44,45,46,47,48,49],"尾大":[5,6,7,8,9,15,16,17,18,19,25,26,27,28,29,35,36,37,38,39,45,46,47,48,49],"合小":[1,2,3,4,5,6,10,11,12,13,14,15,20,21,22,23,24,30,31,32,33,40,41,42],"尾小":[1,2,3,4,10,11,12,13,14,20,21,22,23,24,30,31,32,33,34,40,41,42,43,44],"金":[4,5,12,13,26,27,34,35,42,43],"木":[8,9,16,17,24,25,38,39,46,47],"水":[1,14,15,22,23,30,31,44,45],"火":[2,3,10,11,18,19,32,33,40,41,48,49],"土":[6,7,20,21,28,29,36,37],"红波":[1,2,7,8,12,13,18,19,23,24,29,30,34,35,40,45,46],"蓝波":[3,4,9,10,14,15,20,25,26,31,36,37,41,42,47,48],"绿波":[5,6,11,16,17,21,22,27,28,32,33,38,39,43,44,49],"家禽":[1,6,8,9,10,12,13,18,20,21,22,24,25,30,32,33,34,36,37,42,44,45,46,48,49],"野兽":[2,3,4,5,7,11,14,15,16,17,19,23,26,27,28,29,31,35,38,39,40,41,43,47],"红单":[1,7,13,19,23,29,35,45],"红双":[2,8,12,18,24,30,34,40,46],"蓝单":[3,9,15,25,31,37,41,47],"蓝双":[4,10,14,20,26,36,42,48],"绿单":[5,11,17,21,27,33,39,43,49],"绿双":[6,16,22,28,32,38,44],"鼠":[7,19,31,43],"牛":[6,18,30,42],"虎":[5,17,29,41],"兔":[4,16,28,40],"龙":[3,15,27,39],"蛇":[2,14,26,38],"马":[1,13,25,37,49],"羊":[12,24,36,48],"猴":[11,23,35,47],"鸡":[10,22,34,46],"狗":[9,21,33,45],"猪":[8,20,32,44],"0尾":[10,20,30,40],"1尾":[1,11,21,31,41],"2尾":[2,12,22,32,42],"3尾":[3,13,23,33,43],"4尾":[4,14,24,34,44],"5尾":[5,15,25,35,45],"6尾":[6,16,26,36,46],"7尾":[7,17,27,37,47],"8尾":[8,18,28,38,48],"9尾":[9,19,29,39,49],"大尾":[5,6,7,8,9,15,16,17,18,19,25,26,27,28,29,35,36,37,38,39,45,46,47,48,49],"小尾":[1,2,3,4,10,11,12,13,14,20,21,22,23,24,30,31,32,33,34,40,41,42,43,44],"0头":[1,2,3,4,5,6,7,8,9],"1头":[10,11,12,13,14,15,16,17,18,19],"2头":[20,21,22,23,24,25,26,27,28,29],"3头":[30,31,32,33,34,35,36,37,38,39],"4头":[40,41,42,43,44,45,46,47,48,49],"1门":[1,2,3,4,5,6,7,8,9],"2门":[10,11,12,13,14,15,16,17,18],"3门":[19,20,21,22,23,24,25,26,27],"4门":[28,29,30,31,32,33,34,35,36,37],"5门":[38,39,40,41,42,43,44,45,46,47,48,49],"1段":[1,2,3,4,5,6,7],"2段":[8,9,10,11,12,13,14],"3段":[15,16,17,18,19,20,21],"4段":[22,23,24,25,26,27,28],"5段":[29,30,31,32,33,34,35],"6段":[36,37,38,39,40,41,42],"7段":[43,44,45,46,47,48,49],"1合":[1,10],"2合":[2,11,20],"3合":[3,12,21,30],"4合":[4,13,22,31,40],"5合":[5,14,23,32,41],"6合":[6,15,24,33,42],"7合":[7,16,25,34,43],"8合":[8,17,26,35,44],"9合":[9,18,27,36,45],"10合":[19,28,37,46],"11合":[29,38,47],"12合":[39,48],"13合":[49],"0合尾":[19,28,37,46],"1合尾":[1,10,29,38,47],"2合尾":[2,11,20,39,48],"3合尾":[3,12,21,30,49],"4合尾":[4,13,22,31,40],"5合尾":[5,14,23,32,41],"6合尾":[6,15,24,33,42],"7合尾":[7,16,25,34,43],"8合尾":[8,17,26,35,44],"9合尾":[9,18,27,36,45],"0头单":[1,3,5,7,9],"1头单":[11,13,15,17,19],"2头单":[21,23,25,27,29],"3头单":[31,33,35,37,39],"4头单":[41,43,45,47,49],"0头双":[2,4,6,8],"1头双":[10,12,14,16,18],"2头双":[20,22,24,26,28],"3头双":[30,32,34,36,38],"4头双":[40,42,44,46,48],"3余0":[3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48],"3余1":[1,4,7,10,13,16,19,22,25,28,31,34,37,40,43,46,49],"3余2":[2,5,8,11,14,17,20,23,26,29,32,35,38,41,44,47],"4余0":[4,8,12,16,20,24,28,32,36,40,44,48],"4余1":[1,5,9,13,17,21,25,29,33,37,41,45,49],"4余2":[2,6,10,14,18,22,26,30,34,38,42,46],"4余3":[3,7,11,15,19,23,27,31,35,39,43,47],"5余0":[5,10,15,20,25,30,35,40,45],"5余1":[1,6,11,16,21,26,31,36,41,46],"5余2":[2,7,12,17,22,27,32,37,42,47],"5余3":[3,8,13,18,23,28,33,38,43,48],"5余4":[4,9,14,19,24,29,34,39,44,49],"6余0":[6,12,18,24,30,36,42,48],"6余1":[1,7,13,19,25,31,37,43,49],"6余2":[2,8,14,20,26,32,38,44],"6余3":[3,9,15,21,27,33,39,45],"6余4":[4,10,16,22,28,34,40,46],"6余5":[5,11,17,23,29,35,41,47],"7余0":[7,14,21,28,35,42,49],"7余1":[1,8,15,22,29,36,43],"7余2":[2,9,16,23,30,37,44],"7余3":[3,10,17,24,31,38,45],"7余4":[4,11,18,25,32,39,46],"7余5":[5,12,19,26,33,40,47],"7余6":[6,13,20,27,34,41,48],"楼上码":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,25,26,27,28],"楼下码":[22,23,24,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49],"前落码":[1,2,3,4,5,6,7,8,17,18,19,20,21,22,23,24,33,34,35,36,37,38,39,40],"后落码":[9,10,11,12,13,14,15,16,25,26,27,28,29,30,31,32,41,42,43,44,45,46,47,48,49],"左边码":[1,2,3,4,8,9,10,11,15,16,17,18,22,23,24,29,30,31,36,37,38,43,44,45],"右边码":[5,6,7,12,13,14,19,20,21,25,26,27,28,32,33,34,35,39,40,41,42,46,47,48,49],"内围码":[9,10,11,12,13,16,17,18,19,20,23,24,25,26,27,30,31,32,33,34,37,38,39,40,41],"外围码":[1,2,3,4,5,6,7,8,14,15,21,22,28,29,35,36,42,43,44,45,46,47,48,49],"中数":[13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],"边数":[1,2,3,4,5,6,7,8,9,10,11,12,38,39,40,41,42,43,44,45,46,47,48,49]};
+/* ==== 条件词典结束 ==== */
+
+const ZODIAC_NUMS = {
+  '马':[1,13,25,37,49], '蛇':[2,14,26,38], '龙':[3,15,27,39], '兔':[4,16,28,40],
+  '虎':[5,17,29,41],   '牛':[6,18,30,42], '鼠':[7,19,31,43], '猪':[8,20,32,44],
+  '狗':[9,21,33,45],   '鸡':[10,22,34,46],'猴':[11,23,35,47],'羊':[12,24,36,48]
+};
+
+const WAVE = {
+  '红波':[1,2,7,8,12,13,18,19,23,24,29,30,34,35,40,45,46],
+  '蓝波':[3,4,9,10,14,15,20,25,26,31,36,37,41,42,47,48],
+  '绿波':[5,6,11,16,17,21,22,27,28,32,33,38,39,43,44,49]
+};
+
+const ELEM = {
+  '金':[4,5,12,13,26,27,34,35,42,43],
+  '木':[8,9,16,17,24,25,38,39,46,47],
+  '水':[1,14,15,22,23,30,31,44,45],
+  '火':[2,3,10,11,18,19,32,33,40,41,48,49],
+  '土':[6,7,20,21,28,29,36,37]
+};
+
+// 生肖级分类（来自同一张灵码表）
+const CLS = {
+  '天地肖': {order:['天肖','地肖'], map:{'天肖':['龙','兔','牛','马','猴','猪'],'地肖':['鼠','虎','蛇','羊','鸡','狗']}},
+  '阴阳肖': {order:['阳肖','阴肖'], map:{'阳肖':['牛','虎','兔','羊','猴','鸡'],'阴肖':['鼠','龙','蛇','马','狗','猪']}},
+  '吉凶肖': {order:['吉肖','凶肖'], map:{'吉肖':['兔','龙','蛇','马','羊','鸡'],'凶肖':['鼠','牛','虎','猴','狗','猪']}},
+  '生肖色': {order:['红生肖','绿生肖','蓝生肖'], map:{'红生肖':['马','兔','鼠','鸡'],'绿生肖':['羊','龙','牛','狗'],'蓝生肖':['蛇','虎','猪','猴']}},
+  '四季肖': {order:['春·东方','夏·南方','秋·西方','冬·北方'], map:{'春·东方':['兔','虎','龙'],'夏·南方':['马','蛇','羊'],'秋·西方':['鸡','猴','狗'],'冬·北方':['鼠','猪','牛']}}
+};
+
+const WAVE_COLOR = {'红波':'var(--red)','蓝波':'var(--blue)','绿波':'var(--green)'};
+const HEX = {'红波':'#dc2626','蓝波':'#2563eb','绿波':'#0f9d58'};
+
+/* 号码 -> 属性 */
+const INFO = {};
+for (let n = 1; n <= 49; n++) INFO[n] = {no:n};
+Object.entries(ZODIAC_NUMS).forEach(([z, arr]) => arr.forEach(n => INFO[n].zodiac = z));
+Object.entries(WAVE).forEach(([w, arr]) => arr.forEach(n => INFO[n].wave = w));
+Object.entries(ELEM).forEach(([e, arr]) => arr.forEach(n => INFO[n].elem = e));
+
+for (let n = 1; n <= 49; n++){
+  const i = INFO[n];
+  const ds = String(n).padStart(2,'0').split('').map(Number);
+  i.parity = n % 2 ? '单' : '双';
+  i.size   = n <= 24 ? '小' : '大';
+  i.head   = Math.floor(n / 10);
+  i.tail   = n % 10;
+  i.sum    = ds[0] + ds[1];
+  i.sumParity = i.sum % 2 ? '合单' : '合双';
+  // 生肖级分类反查
+  i.cls = {};
+  Object.entries(CLS).forEach(([g, def]) => {
+    for (const [k, list] of Object.entries(def.map)){
+      if (list.includes(i.zodiac)) i.cls[g] = k;
+    }
+  });
+}
+
+/* ============ 2. 输入解析 ============ */
+/* 中文数字 → 阿拉伯数字：五 → 5、十五 → 15、二十五 → 25、一百 → 100、两百五 → 205 */
+const CN_DIGIT = {'零':0,'〇':0,'一':1,'二':2,'两':2,'兩':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,
+  '壹':1,'贰':2,'貳':2,'叁':3,'參':3,'肆':4,'伍':5,'陆':6,'陸':6,'柒':7,'捌':8,'玖':9};
+function cnToNum(s){
+  let n = 0, cur = 0, has = false;
+  for (const ch of s){
+    if (ch in CN_DIGIT){ cur = CN_DIGIT[ch]; has = true; }
+    else if (ch === '十' || ch === '拾'){ n += (cur || 1) * 10; cur = 0; has = true; }
+    else if (ch === '百' || ch === '佰'){ n += (cur || 1) * 100; cur = 0; has = true; }
+  }
+  return has ? n + cur : NaN;
+}
+
+/* 输入归一化：全角数字、顿号、竖线、制表符等一律转成标准写法 */
+function normalizeInput(text){
+  return String(text)
+    .replace(/[\uFF10-\uFF19]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)) // ０-９
+    .replace(/[\uFF0E\u3002]/g, '.')      // ．。
+    .replace(/[\uFF0C\u3001]/g, ' ')      // ，、
+    .replace(/[\uFF58\uFF38\u00D7\u2715]/g, 'x') // ｘＸ×
+    .replace(/[\u3000\t\u00A0]/g, ' ')    // 全角空格 / TAB
+    // 各数五 / 各十五 / 每个一百 → 各数5 / 各15 / 每个100（中文数字放在「各/每」后面才换算）
+    .replace(/([各每]\s*[数數个個号號码碼]?\s*)([零〇一二两兩三四五六七八九十百壹贰貳叁參肆伍陆陸柒捌玖拾佰]+)(?=\s*斤?)/g,
+      (all, head, cn) => {
+        const v = cnToNum(cn);
+        return (isFinite(v) && v > 0) ? head + v : all;
+      })
+    // 41/60 → 41x60：斜杠后面跟数字，表示前一个号的斤数（41 号 60 斤）
+    // 例外：整串 ≥2 个斜杠且两侧都在 1–49 内，说明是把 / 当号码分隔符（28/40/26）
+    .replace(/(\d{1,2})\s*[\/\\]\s*(\d+)/g, (all, a, b, off, str) => {
+      const slashCount = (str.match(/[\/\\]/g) || []).length;
+      const numeric = +a >= 1 && +a <= 49 && +b >= 1 && +b <= 49;
+      return (slashCount >= 2 && numeric) ? a + ' ' + b : a + 'x' + b;
+    })
+    .replace(/[|｜;；\/\\、\-–—]+/g, ' ') // 其余分隔符统一成空格
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/* 条件名正则：长的优先，保证「合单」不被拆成「单」、「0头单」不被拆成「0头」 */
+const COND_KEYS = Object.keys(COND).sort((a, b) => b.length - a.length);
+const COND_PAT = COND_KEYS.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+const COND_RE = new RegExp('(' + COND_PAT + ')\\s*(\\d+)?|(\\d{1,2})\\s*(?:[*xX:：]\\s*(\\d+))?', 'g');
+
+/* ============ 平特抽取 ============ */
+/* 平特不属于任何号码，单独按生肖记斤数
+   平兔300 / 平特兔猴各300 / 平特各300（12 生肖全压）*/
+function extractPingte(text){
+  const out = [];
+  const isZ = c => ZODIAC.includes(c);
+  let res = '', i = 0;
+  while (i < text.length){
+    const two = text.startsWith('平特', i);
+    if (!two && text[i] !== '平'){ res += text[i++]; continue; }
+    let j = i + (two ? 2 : 1);
+    const pend = [], got = [];
+    let group = false;
+    while (j < text.length){
+      const c = text[j];
+      if (c === ' ' || c === '斤' || c === ':' || c === '：'){ j++; continue; }
+      // 平特尾数：「8尾」或「尾8」都认，统一记成 尾8
+      const tm = text.slice(j).match(/^(\d)\s*尾|^尾\s*(\d)/);
+      if (tm){ pend.push('尾' + (tm[1] || tm[2])); j += tm[0].length; continue; }
+      if (isZ(c)){ pend.push(c); j++; continue; }
+      if (c === '各' || c === '每'){ group = true; j++; continue; }
+      // 「各数N / 每个N / 各号N」里的量词，跳过，别当成不认识的字符中断
+      if (c === '数' || c === '數' || c === '个' || c === '個' || c === '号' || c === '號' || c === '码' || c === '碼'){ j++; continue; }
+      if (c >= '0' && c <= '9'){
+        let k = j; while (k < text.length && text[k] >= '0' && text[k] <= '9') k++;
+        const n = parseInt(text.slice(j, k), 10);
+        if (pend.length){
+          if (group) pend.forEach(z => got.push({z, mult:n}));
+          else got.push({z: pend[pend.length - 1], mult:n});
+          pend.length = 0; group = false; j = k; continue;
+        }
+        if (group){ ZODIAC.forEach(z => got.push({z, mult:n})); group = false; j = k; continue; }
+        break; // 没有生肖跟数字 → 不是平特，停
+      }
+      break;
+    }
+    if (got.length){ out.push(...got); res += ' '; i = j; continue; }
+    res += text[i++];
+  }
+  return { rest: res, pingte: out };
+}
+
+/* 平特合并：同一生肖 / 尾数跨批累加，按「十二生肖 → 0尾…9尾」顺序输出 */
+function mergePingte(list){
+  const map = new Map();
+  for (const p of list) map.set(p.z, (map.get(p.z) || 0) + p.mult);
+  return ZODIAC.concat(PT_TAILS).filter(z => map.has(z)).map(z => ({z, mult: map.get(z)}));
+}
+
+/* 「各N」只作用于它前面那一段，直到上一个「各N」为止
+   例：虎各号10。41/60 26 34各20
+       → 虎(4号)×10 / 41号60斤 / 26、34 各20斤 */
+function parseInput(text){
+  const norm = normalizeInput(text);
+  // 先把平特抽走，剩下的才按号码 / 条件解析
+  const { rest, pingte } = extractPingte(norm);
+  const t = rest;
+  const items = [], bad = [];
+
+  // 找出所有 各N / 各数N / 各号N / 每个N 标记
+  const markRe = /[各每]\s*[数個个号碼码]?\s*(\d+)\s*斤?/g;
+  const marks = [];
+  let mm;
+  while ((mm = markRe.exec(t)) !== null){
+    marks.push({ start: mm.index, end: mm.index + mm[0].length, mult: parseInt(mm[1], 10) || 1 });
+  }
+
+  // 按标记切段：每段 = 标记前的文本 + 该标记的斤数
+  const segs = [];
+  let prev = 0;
+  for (const mk of marks){
+    segs.push({ text: t.slice(prev, mk.start), mult: mk.mult });
+    prev = mk.end;
+  }
+  const tail = t.slice(prev);
+  if (tail.trim()) segs.push({ text: tail, mult: 1 });
+  if (!segs.length) segs.push({ text: t, mult: 1 });
+
+  let globalMult = 1;
+  for (const sg of segs){
+    if (sg.mult !== 1) globalMult = sg.mult;
+    // 分支1：条件名（生肖 / 波色 / 合单 / 红单 / 1门 / 0头单 / 内围码 …），可跟斤数
+    // 分支2：号码，可跟斤数（28x5 / 41/60）
+    COND_RE.lastIndex = 0;
+    let m;
+    while ((m = COND_RE.exec(sg.text)) !== null){
+      if (m[1]){
+        const mult = m[2] ? (parseInt(m[2], 10) || 1) : sg.mult;
+        (COND[m[1]] || []).forEach(n => items.push({no:n, mult}));
+      } else {
+        const n = parseInt(m[3], 10);
+        const mult = m[4] ? (parseInt(m[4], 10) || 1) : sg.mult;
+        if (n >= 1 && n <= 49) items.push({no:n, mult});
+        else bad.push(m[3]);
+      }
+    }
+  }
+  return {items, bad, globalMult, pingte};
+}
+
+/* 多批合并：同一号码跨批累加斤数 */
+function mergeItems(list){
+  const map = new Map();
+  for (const it of list) map.set(it.no, (map.get(it.no) || 0) + it.mult);
+  return [...map.entries()]
+    .map(([no, mult]) => ({no, mult}))
+    .sort((a, b) => a.no - b.no);
+}
+
+/* ===== 单个号码手动修正 =====
+   ADJUST = { 32: -95 } → 32 号在合并结果上减 95 斤（可正可负，累加）
+   应用后全站统计（总斤数 / 生肖 / 风险表 / 平特）都跟着变 */
+let ADJUST = {};
+try {
+  const raw = LSX.getItem('liuhe_adjust_v1');
+  if (raw){
+    const o = JSON.parse(raw) || {};
+    Object.keys(o).forEach(k => {
+      const no = parseInt(k, 10), v = +o[k];
+      if (no >= 1 && no <= 49 && isFinite(v) && v !== 0) ADJUST[no] = v;
+    });
+  }
+} catch(e){}
+
+function saveAdjust(){
+  try { LSX.setItem('liuhe_adjust_v1', JSON.stringify(ADJUST)); } catch(e){}
+}
+
+/* 修正条输入框的值（重渲染后保留，方便连改几个号） */
+let ADJ_IN = {no: '', d: '', msg: ''};
+
+/* 解析批量号码：1 5 10 / 1,5,10 / 1-49 / 全部 —— 去重、按 1–49 过滤、升序 */
+function parseNoList(s){
+  const out = [];
+  const push = n => { n = Math.round(n); if (n >= 1 && n <= 49 && out.indexOf(n) < 0) out.push(n); };
+  const txt = String(s == null ? '' : s).trim();
+  if (!txt) return out;
+  if (/^(全部|所有|全号|all|\*)$/i.test(txt)){ for (let i = 1; i <= 49; i++) push(i); return out; }
+  const re = /(\d+)\s*(?:[-~—–至到]\s*(\d+))?/g;
+  let m;
+  while ((m = re.exec(txt)) !== null){
+    const a = parseInt(m[1], 10);
+    if (m[2] == null) push(a);
+    else {
+      const b = parseInt(m[2], 10);
+      const lo = Math.min(a, b), hi = Math.max(a, b);
+      for (let i = lo; i <= hi; i++) push(i);
+    }
+  }
+  return out.sort((x, y) => x - y);
+}
+
+/* 把调整叠到合并结果；改完 ≤ 0 的号直接从盘面移除 */
+function applyAdjust(items){
+  const keys = Object.keys(ADJUST);
+  if (!keys.length) return items;
+  const map = new Map(items.map(it => [it.no, it.mult]));
+  keys.forEach(k => {
+    const no = +k;
+    const v = Math.round(((map.get(no) || 0) + ADJUST[k]) * 100) / 100;
+    if (v <= 0) map.delete(no); else map.set(no, v);
+  });
+  return [...map.entries()]
+    .map(([no, mult]) => ({no, mult}))
+    .sort((a, b) => a.no - b.no);
+}
+
+/* ===== 单个生肖平特手动修正（跟号码那个一模一样的用法） =====
+   PT_ADJUST = { 牛: -200 } → 牛的平特在合并结果上减 200 斤（可正可负，累加） */
+let PT_ADJUST = {};
+try {
+  const raw = LSX.getItem('liuhe_ptadjust_v1');
+  if (raw){
+    const o = JSON.parse(raw) || {};
+    Object.keys(o).forEach(k => {
+      const v = +o[k];
+      if ((ZODIAC.includes(k) || isPtTail(k)) && isFinite(v) && v !== 0) PT_ADJUST[k] = v;
+    });
+  }
+} catch(e){}
+
+function savePtAdjust(){
+  try { LSX.setItem('liuhe_ptadjust_v1', JSON.stringify(PT_ADJUST)); } catch(e){}
+}
+
+/* 修正条输入框的值（重渲染后保留） */
+let PTADJ_IN = {z: '', d: '', msg: ''};
+
+const ZODIAC_ALIAS = {'馬': '马', '龍': '龙', '雞': '鸡', '豬': '猪', '雞': '鸡', '兎': '兔', '羊': '羊'};
+
+/* 认生肖：打「牛」就行，也认 1–12 的序号；顺带认「牛200」这种连写
+   平特尾数：打「8尾」「尾8」都行 */
+function parseZodiacInput(s){
+  const t = String(s == null ? '' : s).trim();
+  if (!t) return '';
+  const tm = t.match(/^(?:尾\s*(\d)|(\d)\s*尾)/);
+  if (tm) return '尾' + (tm[1] || tm[2]);
+  const ch = t.charAt(0);
+  if (ZODIAC.includes(ch)) return ch;
+  if (ZODIAC_ALIAS[ch]) return ZODIAC_ALIAS[ch];
+  const n = parseInt(t, 10);
+  if (n >= 1 && n <= 12 && String(n) === t.slice(0, String(n).length)) return ZODIAC[n - 1];
+  return '';
+}
+
+/* 认一串生肖：狗猴马 / 狗 猴 马 / 狗,猴,马 / 8尾 5尾 / 马8尾 —— 按位置顺序、去重返回 */
+function parseZodiacList(s){
+  const out = [];
+  const add = z => { if (z && out.indexOf(z) < 0) out.push(z); };
+  const t = String(s == null ? '' : s).trim();
+  if (!t) return out;
+  const re = /(?:尾\s*(\d)|(\d)\s*尾)|([\u4e00-\u9fa5])|(\d+)/g;
+  let m;
+  while ((m = re.exec(t)) !== null){
+    if (m[1] || m[2]){ add('尾' + (m[1] || m[2])); continue; }   // 尾8 / 8尾
+    if (m[3]){ add(parseZodiacInput(m[3])); continue; }          // 单字生肖（含繁体）
+    if (m[4]){                                                   // 1–12 序号
+      const n = parseInt(m[4], 10);
+      if (n >= 1 && n <= 12) add(ZODIAC[n - 1]);
+    }
+  }
+  return out;
+}
+
+/* 把修正叠到平特合计上；改完 ≤ 0 的生肖直接从平特表移除 */
+function applyPtAdjust(pingte){
+  const keys = Object.keys(PT_ADJUST);
+  if (!keys.length) return pingte;
+  const map = new Map(pingte.map(p => [p.z, p.mult]));
+  keys.forEach(z => {
+    const v = Math.round(((map.get(z) || 0) + PT_ADJUST[z]) * 100) / 100;
+    if (v <= 0) map.delete(z); else map.set(z, v);
+  });
+  return [...map.entries()].map(([z, mult]) => ({z, mult}));
+}
+
+/* 按行拆批，每行独立解析后汇总 */
+function parseAll(text){
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length);
+  const batches = [], all = [], bad = [], ptAll = [];
+  for (const line of lines){
+    const r = parseInput(line);
+    bad.push(...r.bad);
+    const pt = mergePingte(r.pingte || []);
+    if (!r.items.length && !pt.length) continue;
+    const merged = mergeItems(r.items);
+    batches.push({
+      idx: batches.length + 1,
+      raw: line.length > 52 ? line.slice(0, 52) + '…' : line,
+      items: merged,
+      total: merged.reduce((s, it) => s + it.mult, 0),
+      pingte: pt,
+      ptotal: pt.reduce((s, p) => s + p.mult, 0)
+    });
+    all.push(...r.items);
+    ptAll.push(...pt);
+  }
+  return {items: mergeItems(all), pingte: mergePingte(ptAll), batches, bad};
+}
+
+/* ============ 3. 汇总 ============ */
+function tally(items, keyFn){
+  const map = new Map();
+  for (const it of items){
+    const k = keyFn(it.no);
+    map.set(k, (map.get(k) || 0) + it.mult);
+  }
+  return map;
+}
+
+function buildStats(items){
+  const total = items.reduce((s, it) => s + it.mult, 0);
+  const uniq = new Set(items.map(it => it.no));
+
+  const dims = [];
+  // 生肖（固定顺序）
+  dims.push({name:'生肖', map: tally(items, n => INFO[n].zodiac), order: ZODIAC});
+  // 波色
+  dims.push({name:'波色', map: tally(items, n => INFO[n].wave), order:['红波','蓝波','绿波']});
+  // 五行
+  dims.push({name:'五行', map: tally(items, n => INFO[n].elem), order:['金','木','水','火','土']});
+  // 单双 / 大小
+  dims.push({name:'单双', map: tally(items, n => INFO[n].parity), order:['单','双']});
+  dims.push({name:'大小', map: tally(items, n => INFO[n].size), order:['大','小']});
+  // 头 / 尾
+  dims.push({name:'头数', map: tally(items, n => INFO[n].head + '头'), order:['0头','1头','2头','3头','4头']});
+  dims.push({name:'尾数', map: tally(items, n => INFO[n].tail + '尾'), order:[...Array(10).keys()].map(i => i + '尾')});
+  // 合数单双
+  dims.push({name:'合数单双', map: tally(items, n => INFO[n].sumParity), order:['合单','合双']});
+  // 合大合小（合数≥7 为大，与挑码助手口径一致）
+  dims.push({name:'合大合小', map: tally(items, n => INFO[n].sum >= 7 ? '合大' : '合小'), order:['合大','合小']});
+  // 家禽野兽（牛马羊鸡狗猪 = 家禽）
+  dims.push({name:'家禽野兽', map: tally(items, n => ['牛','马','羊','鸡','狗','猪'].includes(INFO[n].zodiac) ? '家禽' : '野兽'), order:['家禽','野兽']});
+  // 门（挑码助手口径：1–9 / 10–18 / 19–27 / 28–37 / 38–49）
+  dims.push({name:'门', map: tally(items, n => n <= 9 ? '1门' : n <= 18 ? '2门' : n <= 27 ? '3门' : n <= 37 ? '4门' : '5门'), order:['1门','2门','3门','4门','5门']});
+  // 段（每 7 个一段）
+  dims.push({name:'段', map: tally(items, n => Math.ceil(n / 7) + '段'), order:['1段','2段','3段','4段','5段','6段','7段']});
+  // 生肖级分类
+  Object.entries(CLS).forEach(([g, def]) => {
+    dims.push({name:g, map: tally(items, n => INFO[n].cls[g]), order: def.order});
+  });
+
+  return {total, uniq: uniq.size, dims};
+}
+
+/* ============ 4. 渲染 ============ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pct = (v, t) => t ? (v / t * 100).toFixed(1) + '%' : '—';
+
+function waveClass(w){ return w === '红波' ? 'r' : w === '蓝波' ? 'b' : 'g'; }
+
+/* 表格排序：默认按号码 1-49，点斤数切大小 */
+let SORT = {key:'no', dir:'asc'};
+function sortItems(list){
+  const a = [...list];
+  if (SORT.key === 'mult') a.sort((x, y) => SORT.dir === 'asc' ? x.mult - y.mult : y.mult - x.mult);
+  else a.sort((x, y) => SORT.dir === 'asc' ? x.no - y.no : y.no - x.no);
+  return a;
+}
+
+function detailTable(items, total, batches){
+  const noBatch = new Map();
+  batches.forEach(b => b.items.forEach(it => {
+    if (!noBatch.has(it.no)) noBatch.set(it.no, []);
+    const a = noBatch.get(it.no);
+    if (!a.includes(b.idx)) a.push(b.idx);
+  }));
+
+  const rows = sortItems(items).map(it => {
+    const i = INFO[it.no];
+    const bs = noBatch.get(it.no) || [];
+    const adj = ADJUST[it.no];
+    const adjTip = adj ? ` title="手动 ${adj > 0 ? '+' : ''}${adj} 斤"` : '';
+    return `<tr${adj ? ' class="adj-row"' : ''}>
+      <td><span class="no ${waveClass(i.wave)}">${String(i.no).padStart(2,'0')}</span>${adj ? `<em class="adj-flag"${adjTip}>改</em>` : ''}</td>
+      <td class="z">${i.zodiac}</td>
+      <td style="color:${WAVE_COLOR[i.wave]};font-weight:600">${i.wave}</td>
+      <td>${i.elem}</td>
+      <td>${i.parity}</td>
+      <td>${i.size}</td>
+      <td>${i.head}头${i.tail}尾</td>
+      <td>${i.sum} ${i.sumParity}</td>
+      <td class="mono dim">${bs.length > 1 ? '<b style="color:#d97706">' + bs.join('+') + '</b>' : bs.join(',')}</td>
+      <td class="mono jin">${it.mult} 斤<small class="x47">×${RATE} = ${fmtMoney(amountOf(it.mult))}</small></td>
+      <td class="mono dim">${(it.mult / total * 100).toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
+
+  const arrow = k => SORT.key === k ? (SORT.dir === 'asc' ? '▲' : '▼') : '⇅';
+
+  return `<div class="tbl-wrap"><table>
+    <thead><tr>
+      <th class="sortable ${SORT.key === 'no' ? 'on' : ''}" data-sort="no" title="点击按号码排序（1–49）">号码<i>${arrow('no')}</i></th>
+      <th>生肖</th><th>波色</th><th>五行</th><th>单双</th>
+      <th>大小</th><th>头尾</th><th>合数</th><th>批次</th>
+      <th class="sortable ${SORT.key === 'mult' ? 'on' : ''}" data-sort="mult" title="点击按斤数从大到小 / 从小到大">合计斤数<i>${arrow('mult')}</i></th>
+      <th>占比</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr>
+      <td colspan="8" style="text-align:right;font-weight:600;color:#475569">合计 ${items.length} 个号</td>
+      <td></td>
+      <td class="mono jin">${total} 斤<small class="x47">×${RATE} = ${fmtMoney(amountOf(total))}</small></td>
+      <td class="mono dim">100%</td>
+    </tr></tfoot>
+  </table></div>`;
+}
+
+/* 生肖统计：同一生肖的所有号合并成一行 */
+function zodiacGroups(items){
+  const groups = new Map();
+  items.forEach(it => {
+    const z = INFO[it.no].zodiac;
+    if (!groups.has(z)) groups.set(z, {zodiac:z, nums:[], jin:0});
+    const g = groups.get(z);
+    g.nums.push(it);
+    g.jin += it.mult;
+  });
+  const rows = [...groups.values()];
+  rows.forEach(r => r.nums.sort((a, b) => a.no - b.no));
+  return rows;
+}
+
+let ZSORT = {key:'jin', dir:'desc'};
+/* 平特表排序：默认按十二生肖固定顺序，点表头才变 */
+let PTSORT = {key:'idx', dir:'asc'};
+
+/* ============ 单价换算 ============ */
+let RATE = 47;
+try {
+  const _r = LSX.getItem('liuhe_rate_v1');
+  if (_r !== null && isFinite(+_r) && +_r > 0) RATE = +_r;
+} catch(e){}
+
+function fmtMoney(v){
+  const x = Math.round(v * 100) / 100;
+  const [i, d] = String(x).split('.');
+  return i.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (d ? '.' + d : '');
+}
+
+/* 平特结算系数：马 0.8，其余 1（老板口径：平特不走 47 单价，平特 ×1，马 ×0.8）
+   平特尾数一率 0.8 = ×1.8 含退本，跟马同档（尾8 和马一样都是 5 个号，出现概率相同） */
+const PT_FACTOR = { 马: 0.8 };
+PT_TAILS.forEach(t => { PT_FACTOR[t] = 0.8; });
+const ptFactor = z => (PT_FACTOR[z] ?? 1);
+const PT_UNIT = 1;   // 平特每斤固定 1，不跟单价 RATE 走
+
+/* 平特真正掏出去的钱 = 赔额 ＋ 退还本金（老板口径：本也要一起赔回去）
+   例：马押 500 斤 → 赔 400，再退本 500，共出 900 ＝ 500 × (1 + 0.8) */
+const ptCost = (bet, f) => Math.round(bet * (1 + f) * 100) / 100;
+
+/* 把斤数按单价折成金额（不做四舍五入以外的处理） */
+function amountOf(jin){ return Math.round(jin * RATE * 100) / 100; }
+
+function money(jin){ return fmtMoney(amountOf(jin)); }
+
+/* 平特金额：斤 × 1 × 生肖系数，与单价无关 */
+function ptAmountOf(pingte){
+  return Math.round(pingte.reduce((s, p) => s + p.mult * PT_UNIT * ptFactor(p.z), 0) * 100) / 100;
+}
+/* 平特折后斤数 */
+function ptFoldedJin(pingte){
+  return pingte.reduce((s, p) => s + p.mult * ptFactor(p.z), 0);
+}
+
+/* 斤数下方那行小字：×47 = 1,175 */
+function amtLine(jin){
+  return `<span class="amt" data-jin="${jin}">×${RATE} = <b>${money(jin)}</b></span>`;
+}
+
+/* 平特行小字：马 ×1×0.8 = 80；其余 ×1 = 300 */
+function ptAmtLine(jin, z){
+  const f = ptFactor(z);
+  const head = f === 1 ? `×${PT_UNIT}` : `×${PT_UNIT}×${f}`;
+  return `<span class="amt pt-amt">${head} = <b>${fmtMoney(Math.round(jin * PT_UNIT * f * 100) / 100)}</b></span>`;
+}
+
+function zodiacTable(items, total){
+  const rows = zodiacGroups(items);
+
+  rows.sort((a, b) => {
+    if (ZSORT.key === 'idx'){
+      const d = ZODIAC.indexOf(a.zodiac) - ZODIAC.indexOf(b.zodiac);
+      return ZSORT.dir === 'asc' ? d : -d;
+    }
+    const d = a.jin - b.jin;
+    return ZSORT.dir === 'asc' ? d : -d;
+  });
+
+  const maxJin = Math.max(...rows.map(r => r.jin), 1);
+  const arrow = k => ZSORT.key === k ? (ZSORT.dir === 'asc' ? '▲' : '▼') : '⇅';
+  const topJin = Math.max(...rows.map(r => r.jin), 0);
+
+  const body = rows.map(r => {
+    const nums = r.nums.map(it => {
+      const i = INFO[it.no];
+      return `<span class="zt-chip"><b class="no ${waveClass(i.wave)}">${String(it.no).padStart(2,'0')}</b><em>${it.mult}斤</em></span>`;
+    }).join('');
+    return `<tr class="${r.jin === topJin ? 'zt-top' : ''}">
+      <td class="z">${r.zodiac}</td>
+      <td style="text-align:left"><div class="zt-nums">${nums}</div></td>
+      <td class="mono dim">${r.nums.length} 个</td>
+      <td class="mono jin">${r.jin} 斤<small class="x47">×${RATE} = ${fmtMoney(amountOf(r.jin))}</small></td>
+      <td><div class="zt-bar"><i style="width:${Math.round(r.jin / maxJin * 100)}%"></i></div><span class="mono dim">${pct(r.jin, total)}</span></td>
+    </tr>`;
+  }).join('');
+
+  const top = rows.filter(r => r.jin === topJin).map(r => r.zodiac).join('、');
+
+  return `<div class="tbl-wrap"><table>
+    <thead><tr>
+      <th class="sortable ${ZSORT.key === 'idx' ? 'on' : ''}" data-zsort="idx" title="点击按生肖固定顺序 / 反向">生肖<i>${arrow('idx')}</i></th>
+      <th style="text-align:left">号码（各号斤数）</th>
+      <th>号数</th>
+      <th class="sortable ${ZSORT.key === 'jin' ? 'on' : ''}" data-zsort="jin" title="点击按斤数从大到小 / 从小到大">合计斤数<i>${arrow('jin')}</i></th>
+      <th>占比</th>
+    </tr></thead>
+    <tbody>${body}</tbody>
+    <tfoot><tr>
+      <td colspan="2" style="text-align:right;font-weight:600;color:#475569">合计 ${rows.length} 个生肖 · ${items.length} 个号</td>
+      <td class="mono dim">${items.length} 个</td>
+      <td class="mono jin">${total} 斤<small class="x47">×${RATE} = ${fmtMoney(amountOf(total))}</small></td>
+      <td class="mono dim">100%</td>
+    </tr></tfoot>
+  </table></div>
+  <p class="hint" style="margin:8px 2px 0">压得最重：<b>${esc(top)}</b> ${topJin} 斤 · 共 ${rows.length} 个生肖有下注 · 点「生肖」表头按十二生肖顺序排</p>`;
+}
+
+/* 平特统计：12 个生肖固定全列，平特斤数不进号码 / 不进生肖明细 */
+function pingteTable(pingte, ptTotal, batches = []){
+  const map = new Map(pingte.map(p => [p.z, p.mult]));
+  const max = Math.max(...pingte.map(p => p.mult), 1);
+  const hit = pingte.filter(p => p.mult === max).map(p => p.z).join('、');
+
+  /* 每个生肖的来源：第几批押了多少（跨批累加时能一眼看出钱从哪来） */
+  const srcMap = new Map();
+  (batches || []).forEach((b, i) => {
+    const idx = b.idx || (i + 1);
+    (b.pingte || []).forEach((p, pi) => {
+      if (!srcMap.has(p.z)) srcMap.set(p.z, []);
+      srcMap.get(p.z).push({idx, mult: p.mult, pi});
+    });
+  });
+
+  /* 12 生肖全列；尾数只列有注的那几个，没注不占行 */
+  const orderOf = k => isPtTail(k) ? 100 + PT_TAILS.indexOf(k) : ZODIAC.indexOf(k);
+  const rows = ZODIAC.map(z => ({z, v: map.get(z) || 0}))
+    .concat(PT_TAILS.map(t => ({z: t, v: map.get(t) || 0})).filter(r => r.v > 0));
+
+  rows.sort((a, b) => {
+    if (PTSORT.key === 'idx'){
+      const d = orderOf(a.z) - orderOf(b.z);
+      return PTSORT.dir === 'asc' ? d : -d;
+    }
+    // 没下平特的（0 斤）不管升还是降都压最后，别占前面
+    if ((a.v === 0) !== (b.v === 0)) return a.v === 0 ? 1 : -1;
+    const d = a.v - b.v;
+    return PTSORT.dir === 'asc' ? d : -d;
+  });
+
+  const arrow = k => PTSORT.key === k ? (PTSORT.dir === 'asc' ? '▲' : '▼') : '⇅';
+
+  const body = rows.map(({z, v}) => {
+    const src = srcMap.get(z) || [];
+    const srcTxt = v && src.length
+      ? `<small class="pt-src" title="这个生肖的斤数来自哪几批">${src.map(s =>
+          `<span>第${s.idx}批 ${s.mult}</span>`
+        ).join('')}</small>`
+      : '';
+    return `<tr class="${v && v === max ? 'zt-top' : ''}">
+      <td class="z">${z}${isPtTail(z) ? `<small class="pt-tail-nums">${tailNums(z).join(' ')}</small>` : ''}</td>
+      <td class="mono ${v ? 'jin' : 'dim'}">${v ? v + ' 斤' : '—'}${srcTxt}</td>
+      <td><div class="zt-bar"><i style="width:${Math.round(v / max * 100)}%"></i></div><span class="mono dim">${v ? pct(v, ptTotal) : '—'}</span></td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="tbl-wrap"><table>
+    <thead><tr>
+      <th class="sortable ${PTSORT.key === 'idx' ? 'on' : ''}" style="width:96px" data-psort="idx" title="点击按十二生肖固定顺序 / 反向">生肖 / 尾数<i>${arrow('idx')}</i></th>
+      <th class="sortable ${PTSORT.key === 'jin' ? 'on' : ''}" style="width:170px" data-psort="jin" title="点击按平特斤数从大到小 / 从小到大">平特斤数<i>${arrow('jin')}</i></th>
+      <th style="text-align:left">占比</th>
+    </tr></thead>
+    <tbody>${body}</tbody>
+    <tfoot><tr>
+      <td style="text-align:right;font-weight:600;color:#475569" colspan="1">合计</td>
+      <td class="mono jin">${ptTotal} 斤</td>
+      <td class="mono dim" style="text-align:left">${pingte.length} 个生肖/尾有平特 · 押得最重：${esc(hit)} ${max} 斤</td>
+    </tr></tfoot>
+  </table></div>
+  <p class="hint" style="margin:8px 2px 0">点「平特斤数」按斤数从大到小排，再点一次从小到大 · 点「生肖 / 尾数」回到固定顺序 · 尾数行灰色小字是这一尾覆盖的号码 · 斤数下的灰色小标签是各批来源（只显示）</p>`;
+}
+
+/* 平特的改动统一走 PT_ADJUST（手动 +/-），不再直接删批次 */
+
+function distCard(d, total){
+  const max = Math.max(...d.order.map(k => d.map.get(k) || 0), 1);
+  const rows = d.order.map(k => {
+    const v = d.map.get(k) || 0;
+    const w = Math.round(v / max * 100);
+    const color = (d.name === '波色' && HEX[k]) ? `background:${HEX[k]}` : '';
+    return `<div class="row ${v ? '' : 'zero'}">
+      <div class="k">${esc(k)}</div>
+      <div class="track"><div class="fill" style="width:${w}%;${color}"></div></div>
+      <div class="v"><b>${v}斤</b> · ${pct(v, total)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="dist">
+    <h4>${esc(d.name)} <em>${d.order.filter(k => d.map.get(k)).length}/${d.order.length} 项有值</em></h4>
+    <div class="dist-body">${rows}</div>
+  </div>`;
+}
+
+function donutSVG(dim, total){
+  const data = dim.order.map(k => ({k, v: dim.map.get(k) || 0, c: HEX[k] || '#94a3b8'}))
+                        .filter(d => d.v > 0);
+  if (!data.length) return '';
+  const size = 210, cx = size/2, cy = size/2, R = size/2 - 6, r = R * 0.6;
+  let a0 = -Math.PI/2;
+  const paths = data.map(d => {
+    const a1 = a0 + (d.v / total) * Math.PI * 2;
+    const large = (a1 - a0) > Math.PI ? 1 : 0;
+    const p = [
+      `M ${(cx + R*Math.cos(a0)).toFixed(2)} ${(cy + R*Math.sin(a0)).toFixed(2)}`,
+      `A ${R} ${R} 0 ${large} 1 ${(cx + R*Math.cos(a1)).toFixed(2)} ${(cy + R*Math.sin(a1)).toFixed(2)}`,
+      `L ${(cx + r*Math.cos(a1)).toFixed(2)} ${(cy + r*Math.sin(a1)).toFixed(2)}`,
+      `A ${r} ${r} 0 ${large} 0 ${(cx + r*Math.cos(a0)).toFixed(2)} ${(cy + r*Math.sin(a0)).toFixed(2)}`,
+      'Z'
+    ].join(' ');
+    a0 = a1;
+    return `<path d="${p}" fill="${d.c}" stroke="#fff" stroke-width="1.5"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${paths}
+    <text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="11" fill="#6b7787">总斤数</text>
+    <text x="${cx}" y="${cy + 16}" text-anchor="middle" font-size="20" font-weight="700" fill="#1c2430">${total}</text>
+  </svg>`;
+}
+
+function vbarChart(dim, total){
+  const max = Math.max(...dim.order.map(k => dim.map.get(k) || 0), 1);
+  const cols = dim.order.map(k => {
+    const v = dim.map.get(k) || 0;
+    const h = Math.round(v / max * 100);
+    return `<div class="vbar ${v ? '' : 'zero'}">
+      <div class="num">${v}</div>
+      <div class="b" style="height:${Math.max(h, 1)}%"></div>
+      <div class="lab">${esc(k)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="vbars">${cols}</div>`;
+}
+
+/* ============ 结算与风控 ============
+   赔率 ODDS（默认 47，可改）：某号开出，按该号注额 ×ODDS 赔付。
+   平特 1 斤赔 1 斤（马 1 斤赔 0.8 斤），一期开 8 个号 → 最多 8 个不同生肖、8 个不同尾数，同名重复只赔一次。
+   平特尾数按「整尾」记：押尾8 5 斤，8 个开奖号里出现 8/18/28/38/48 任意一个就中，只赔一次（尾 0.8 = ×1.8 含退本，跟马同档）。
+   盈亏 = 台面总收入（号码斤 + 平特斤）− 该号号码赔付 − 该生肖平特赔付。
+*/
+let ODDS = 47;
+try {
+  const _o = LSX.getItem('liuhe_odds_v1');
+  if (_o && isFinite(+_o) && +_o > 0) ODDS = +_o;
+} catch(e){}
+
+let CURRENT = null;      // 当前盘面快照，供结算输入框实时调用
+let SETTLE_NO = '';      // 结算框里留着的开奖号
+let SETTLE_PT = [];      // 结算时选中的平特（生肖 / 尾数，去重，各最多 PT_MAX_PICK 个）
+const PT_MAX_PICK = 8;   // 一期开 8 个号 → 最多 8 个不同生肖、8 个不同尾数
+
+/* 风险表口径开关：开 = 号码＋平特（最坏组合），关 = 只看号码 */
+let PT_IN_RISK = true;
+try {
+  const _p = LSX.getItem('liuhe_ptrisk_v1');
+  if (_p === '0') PT_IN_RISK = false;
+} catch(e){}
+
+/* 「号码 － 平特」对比块已按老板要求移除（2026-10-21） */
+
+/* 号码修正（可批量）：实时预览「原值 → 新值」 */
+function adjPreview(){
+  const el = document.getElementById('adjprev');
+  if (!el || el.nodeType === undefined) return;
+  const ni = document.getElementById('adjno'), di = document.getElementById('adjdelta');
+  const list = parseNoList(ni ? ni.value : '');
+  const raw = di ? String(di.value).trim() : '';
+  const typed = ni ? String(ni.value).trim() : '';
+  el.className = 'adj-prev';
+  if (!list.length){
+    if (typed){ el.className = 'adj-prev bad'; el.textContent = '没认出号码：用空格/逗号分隔，或 1-49、全部'; }
+    else el.textContent = '填号码（可多个：1 5 10 / 1-49 / 全部）＋斤数';
+    return;
+  }
+  const cur = n => (CURRENT && CURRENT.bet) ? (CURRENT.bet.get(n) || 0) : 0;
+  const who = list.length === 1
+    ? `${list[0]} 号${INFO[list[0]] ? `（${INFO[list[0]].zodiac}）` : ''}`
+    : `${list.length} 个号`;
+  if (raw === '' || !isFinite(Number(raw))){
+    if (ADJ_IN.msg){ el.className = 'adj-prev ok'; el.innerHTML = `<b>${ADJ_IN.msg}</b>`; return; }
+    el.innerHTML = `${who} 当前合计 <b>${Math.round(list.reduce((s, n) => s + cur(n), 0) * 100) / 100}</b> 斤`;
+    return;
+  }
+  const d = Number(raw);
+  const tot = Math.round(list.reduce((s, n) => s + Math.max(0, cur(n) + d), 0) * 100) / 100;
+  const demo = list.length > 1
+    ? `　例 ${list[0]}号 ${cur(list[0])} → ${Math.max(0, Math.round((cur(list[0]) + d) * 100) / 100)}`
+    : '';
+  el.innerHTML = `${who} 每个 <b>${d > 0 ? '+' : ''}${d}</b> 斤 → 合计 <b>${tot}</b> 斤${demo}`;
+  if (list.every(n => cur(n) + d <= 0)) el.className = 'adj-prev bad';
+}
+
+function adjFlash(txt){
+  const el = document.getElementById('adjprev');
+  if (!el) return;
+  el.className = 'adj-prev bad';
+  el.textContent = txt;
+}
+
+/* 平特修正（可批量）：实时预览「原值 → 新值」 */
+function ptAdjPreview(){
+  const el = document.getElementById('ptadjprev');
+  if (!el) return;
+  const zi = document.getElementById('ptadjz'), di = document.getElementById('ptadjdelta');
+  const list = parseZodiacList(zi ? zi.value : '');
+  const raw = di ? String(di.value).trim() : '';
+  const typed = zi ? String(zi.value).trim() : '';
+  el.className = 'adj-prev';
+  if (!list.length){
+    if (typed){ el.className = 'adj-prev bad'; el.textContent = '没认出：打生肖（狗猴马）或尾数（8尾）'; }
+    else el.textContent = '打生肖/尾数＋斤数，点确定立即改';
+    return;
+  }
+  const cur = z => (CURRENT && CURRENT.pt) ? (CURRENT.pt.get(z) || 0) : 0;
+  const who = list.length === 1 ? `平特 ${list[0]}` : `${list.length} 个平特（${list.join(' ')}）`;
+  if (raw === '' || !isFinite(Number(raw))){
+    if (PTADJ_IN.msg){ el.className = 'adj-prev ok'; el.innerHTML = `<b>${PTADJ_IN.msg}</b>`; return; }
+    el.innerHTML = `${who} 当前 <b>${Math.round(list.reduce((s, z) => s + cur(z), 0) * 100) / 100}</b> 斤`;
+    return;
+  }
+  const d = Number(raw);
+  const tot = Math.round(list.reduce((s, z) => s + Math.max(0, cur(z) + d), 0) * 100) / 100;
+  el.innerHTML = `${who} 每个 <b>${d > 0 ? '+' : ''}${d}</b> 斤 → 合计 <b>${tot}</b> 斤`;
+  if (list.every(z => cur(z) + d <= 0)) el.className = 'adj-prev bad';
+}
+
+function ptAdjFlash(txt){
+  const el = document.getElementById('ptadjprev');
+  if (!el) return;
+  el.className = 'adj-prev bad';
+  el.textContent = txt;
+}
+
+/* 平特按生肖合计（同名重复只算一次） */
+function ptMapOf(pingte){
+  const pt = new Map();
+  (pingte || []).forEach(p => pt.set(p.z, (pt.get(p.z) || 0) + p.mult));
+  return pt;
+}
+
+/* 最坏平特组合：一期开 8 个号 → 最多 8 个不同生肖、8 个不同尾数
+   两组分开取最大的那几个再相加（同一个号可以同时贡献一个肖和一个尾）
+   （平特 1 斤赔 1 斤＋退本 1 斤，马/尾 1 斤赔 0.8＋退本） */
+function ptWorst(pt, n = PT_MAX_PICK){
+  const mk = z => {
+    const bet = pt.get(z) || 0;
+    const f = ptFactor(z);
+    return {z, bet, f, pay: bet * f, cost: ptCost(bet, f)};
+  };
+  const zs = ZODIAC.map(mk).filter(x => x.bet > 0).sort((a, b) => b.cost - a.cost).slice(0, n);
+  const ts = PT_TAILS.map(mk).filter(x => x.bet > 0).sort((a, b) => b.cost - a.cost).slice(0, n);
+  const all = zs.concat(ts).sort((a, b) => b.cost - a.cost);
+  return {
+    all, top: all,
+    pay: all.reduce((s, x) => s + x.pay, 0),    // 纯赔付
+    cost: all.reduce((s, x) => s + x.cost, 0)   // 赔付 ＋ 本金
+  };
+}
+
+function riskData(items, pingte, total, ptTotal){
+  const R = total + ptTotal;
+  const bet = new Map(items.map(it => [it.no, it.mult]));
+  const pt = ptMapOf(pingte);
+  const worst = ptWorst(pt);
+  const worstCost = worst.cost;                 // 最坏组合真正掏出去（含退本）—— 汇总用
+  const worstPay = worst.pay;                   // 纯赔额（不含退本）—— 单号表沿用老口径
+  const worstPt = PT_IN_RISK ? worstPay : 0;    // 计入盈亏的部分（开关关掉 = 0）
+
+  const limit = (R - worstPt) / ODDS;      // 单号打平注额（含平特时先扣掉最坏平特赔额）
+  const rows = [];
+  for (let n = 1; n <= 49; n++){
+    const z = INFO[n].zodiac;
+    const b = bet.get(n) || 0;
+    const pz = pt.get(z) || 0;
+    const pay = b * ODDS + worstPt;
+    rows.push({n, z, b, pz, pay, pl: R - pay, over: b - limit});
+  }
+  return {R, limit, bet, pt, rows, total, ptTotal, worst, worstPay, worstCost, worstPt};
+}
+
+/* 单号结算卡：一个开奖号 + 若干平特生肖（重复只赔一次） */
+function stlCard(no, ptSel){
+  if (!CURRENT) return '<span class="rk-hint">先加一批数据</span>';
+  const uniq = [...new Set(ptSel || [])];
+  const picked = uniq.filter(k => !isPtTail(k)).slice(0, PT_MAX_PICK)
+    .concat(uniq.filter(k => isPtTail(k)).slice(0, PT_MAX_PICK));  // 生肖 / 尾各最多 8 个
+  const hasNo = no >= 1 && no <= 49;
+  if (!hasNo && !picked.length) return '<span class="rk-hint">输入 1–49 的开奖号，或点上平特生肖</span>';
+
+  const {R, bet, pt} = CURRENT;
+  const z = hasNo ? INFO[no].zodiac : '—';
+  const b = hasNo ? (bet.get(no) || 0) : 0;
+  const lines = picked.map(z2 => {
+    const bet = pt.get(z2) || 0;
+    const f = ptFactor(z2);
+    return {z: z2, bet, f, pay: bet * f, cost: ptCost(bet, f)};
+  });
+  const payNum = b * ODDS;
+  const payPt = lines.reduce((s, x) => s + x.pay, 0);      // 纯赔付
+  const costPt = lines.reduce((s, x) => s + x.cost, 0);    // 赔付 ＋ 退本
+  const ptPrincipal = costPt - payPt;                      // 退回去的本
+  const pl = R - payNum - costPt;
+  const pct = R ? (pl / R * 100) : 0;
+  const need = pl < 0 ? Math.ceil((payNum + costPt - R) / (ODDS - 1)) : 0;
+  const cls = pl > 0 ? 'win' : (pl < 0 ? 'lose' : '');
+  const sign = pl > 0 ? '+' : '';
+
+  const ptChips = lines.length
+    ? `<div class="rk-ptlist">${lines.map(x =>
+        `<span class="pc ${x.bet ? '' : 'zero'}" title="${x.bet ? `${x.z}：押 ${x.bet} 斤 → 赔 ${fmtMoney(x.pay)} ＋ 退本 ${fmtMoney(x.bet)} ＝ ${fmtMoney(x.cost)}` : `${x.z} 没有注`}">${x.z}${x.f !== 1 ? `<em style="font-style:normal;color:#b45309;font-size:11px;margin-left:3px">×${x.f}</em> ` : ''}<b>${x.bet} 斤</b>${x.bet ? ` → 出 ${fmtMoney(x.cost)}` : ' 未押'}</span>`
+      ).join('')}</div>`
+    : '';
+
+  const ptTxt = lines.length ? ` ＋ 平特 ${lines.map(x => x.z).join('、')}` : '';
+  const label = hasNo ? `开 <b>${no} ${z}</b>` : '只算平特 ';
+
+  const advice = pl < 0
+    ? `<div class="rk-advice">${label}${ptTxt} 亏 <em>${fmtMoney(Math.abs(pl))} 斤</em>。
+       ${hasNo ? `要打平，得把号码敞口砍掉 <em>${need} 斤</em>（转单给同行 / 退单），或在外盘买 <em>${need} 斤</em> ${no} 号对冲。` : `平特这边就要压掉 <em>${Math.ceil((costPt - R) / 1)} 斤</em> 注额才不亏。`}
+       现在注额 ${b} 斤，含平特后的打平线 ${Math.floor(CURRENT.limit)} 斤${hasNo ? `，超了 <em>${Math.round(b - CURRENT.limit)} 斤</em>` : ''}。
+       平特${ptPrincipal ? `：赔 ${fmtMoney(payPt)} ＋ 退本 ${fmtMoney(ptPrincipal)} ＝ <em>${fmtMoney(costPt)} 斤</em>` : '没中，不用退本'}。</div>`
+    : `<div class="rk-advice">${label}${ptTxt} 赚 <em>${fmtMoney(pl)} 斤</em>（总收的 ${Math.round(pct)}%）。
+       ${hasNo ? `该号注额 ${b} 斤，还能再收 <em>${Math.max(0, Math.floor(CURRENT.limit - b))} 斤</em> 才到打平线。` : `平特赔完退完本还剩 ${fmtMoney(pl)} 斤。`}
+       ${ptPrincipal ? `平特：赔 ${fmtMoney(payPt)} ＋ 退本 ${fmtMoney(ptPrincipal)} ＝ ${fmtMoney(costPt)} 斤。` : ''}</div>`;
+
+  return `<div class="rk-res">
+      <div class="c"><span>开奖号</span><b>${hasNo ? String(no).padStart(2, '0') : '—'}</b></div>
+      <div class="c"><span>生肖</span><b>${z}</b></div>
+      <div class="c"><span>该号注额</span><b>${b}<i>斤</i></b></div>
+      <div class="c"><span>号码赔付</span><b>${fmtMoney(payNum)}<i>斤</i></b></div>
+      <div class="c"><span>平特赔付＋退本（${lines.length} 项）</span><b>${fmtMoney(costPt)}<i>斤</i></b><small style="font-size:10.5px;color:#94a3b8">赔 ${fmtMoney(payPt)} ＋ 本 ${fmtMoney(ptPrincipal)}</small></div>
+      <div class="c ${cls}"><span>净盈亏</span><b>${sign}${fmtMoney(pl)}<i>斤</i></b></div>
+    </div>${ptChips}${advice}`;
+}
+
+/* 整块：开奖结算 + 单号风险表 + 平特风险表 */
+function riskBlock(items, pingte, total, ptTotal){
+  if (!total && !ptTotal) return '';
+  const {R, limit, bet, pt, rows, worst, worstPay, worstCost, worstPt} = riskData(items, pingte, total, ptTotal);
+  CURRENT = {R, limit, bet, pt, rows, total, ptTotal, worst, worstPay, worstCost, worstPt};
+
+  const danger = rows.filter(r => r.pl < 0);
+  const warn = rows.filter(r => r.pl >= 0 && r.over > -10 && r.over <= 0);
+  const sorted = rows.slice().sort((a, b) => a.pl - b.pl);
+
+  const tag = r => r.pl < 0
+    ? '<span class="rk-tag d">超线</span>'
+    : (r.over > -10 ? '<span class="rk-tag w">临界</span>' : '<span class="rk-tag s">安全</span>');
+
+  const body = sorted.map(r => {
+    const cls = r.pl < 0 ? 'rk-danger' : (r.over > -10 ? 'rk-warn' : '');
+    const overTxt = r.over > 0 ? `+${Math.round(r.over)}` : '—';
+    return `<tr class="${cls}">
+      <td class="mono"><b>${String(r.n).padStart(2, '0')}</b></td>
+      <td class="z">${r.z}</td>
+      <td class="mono">${r.b ? r.b + ' 斤' : '<span class="dim">—</span>'}</td>
+      <td class="mono dim">${Math.floor(limit)}</td>
+      <td class="mono ${r.over > 0 ? '' : 'dim'}">${overTxt}</td>
+      <td class="mono dim">${r.pz ? r.pz + ' 斤' : '—'}</td>
+      <td class="mono ${r.pl < 0 ? '' : 'jin'}">${r.pl > 0 ? '+' : ''}${fmtMoney(r.pl)}</td>
+      <td>${tag(r)}</td>
+    </tr>`;
+  }).join('');
+
+  /* 平特风控：一期开 8 个号，生肖、尾数各最多 8 个（去重），按最坏组合算 */
+  const maxNumPay = rows.reduce((m, r) => Math.max(m, r.b * ODDS), 0);
+  const ptBudget = R - maxNumPay;          // 号码赔完后留给平特的额度
+  const ptGap = worstCost - ptBudget;      // >0 表示平特盘已经穿仓（与开关无关，恒按实际支出算）
+  const rankMap = new Map(worst.top.map((x, i) => [x.z, i + 1]));
+
+  /* 12 生肖全列 + 有注的尾数（尾数只列有注的） */
+  const ptKeys = ZODIAC.concat(PT_TAILS.filter(t => (pt.get(t) || 0) > 0));
+  const ptBody = ptKeys.map(z => {
+    const pz = pt.get(z) || 0;
+    const f = ptFactor(z);
+    const jzPay = pz * f;                    // 平特纯赔付（已按系数折算）
+    const jz = ptCost(pz, f);                // 赔付 ＋ 退还本金
+    const nums = isPtTail(z) ? tailNums(z) : (() => {
+      const a = [];
+      for (let n = 1; n <= 49; n++) if (INFO[n].zodiac === z) a.push(n);
+      return a;
+    })();
+    const heavy = nums.reduce((a, b) => (bet.get(b) || 0) > (bet.get(a) || 0) ? b : a, nums[0]);
+    const heavyBet = bet.get(heavy) || 0;
+    const heavyPay = heavyBet * ODDS;        // 该肖最重那个号开出来的号码赔付
+    const shown = PT_IN_RISK ? jz + heavyPay : jz;   // 开关开＝号码＋平特；关＝只看平特
+    const rank = rankMap.get(z) || 0;
+    const cls = rank ? 'rk-danger' : (pz ? 'rk-warn' : '');
+    const tag = rank
+      ? `<span class="rk-tag d">最坏组合 #${rank}</span>`
+      : (pz ? '<span class="rk-tag w">备选</span>' : '<span class="rk-tag s">未押</span>');
+    const sub = !shown
+      ? ''
+      : (PT_IN_RISK
+        ? `<small class="pt-sub">平特 ${fmtMoney(jz)} ＋ ${heavy}号 ${fmtMoney(heavyPay)}</small>`
+        : `<small class="pt-sub">仅平特 ${fmtMoney(jzPay)} ＋ 本 ${fmtMoney(pz)}</small>`);
+    return `<tr class="${cls}">
+      <td class="z">${z}</td>
+      <td class="mono ${pz ? '' : 'dim'}">${pz ? pz + ' 斤' : '—'}</td>
+      <td class="mono dim">${heavyBet ? `${heavy}号 ${heavyBet}斤` : '—'}</td>
+      <td class="mono dim">${f === 1 ? '×1' : `<span style="color:#b45309">×${f}</span>`}</td>
+      <td class="mono ${shown ? '' : 'dim'}">${shown ? fmtMoney(shown) + sub : '—'}</td>
+      <td>${tag}</td>
+    </tr>`;
+  }).join('');
+
+  const worstList = worst.top.length
+    ? worst.top.map(x => `<b>${x.z}</b> ${x.bet}斤`).join(' ＋ ')
+    : '<span class="dim">还没有平特注</span>';
+  const maxRow = rows.reduce((a, b) => (b.b > a.b ? b : a), rows[0]);
+
+  const chipOf = (k, label) => {
+    const pz = pt.get(k) || 0;
+    const on = SETTLE_PT.includes(k);
+    const tip = isPtTail(k)
+      ? `${k}：覆盖 ${tailNums(k).join('、')} 共 ${tailNums(k).length} 个号${pz ? '，押了 ' + pz + ' 斤' : '，没有注'}`
+      : `${k}${pz ? ' 押了 ' + pz + ' 斤' : ' 没有注'}`;
+    return `<button type="button" class="pt-chip ${on ? 'on' : ''} ${pz ? '' : 'zero'}" data-ptpick="${k}" title="${tip}">${label}<small>${pz || 0}</small></button>`;
+  };
+  const ptChips = ZODIAC.map(z => chipOf(z, z)).join('')
+    + `<span class="pt-chip-sep">尾</span>`
+    + PT_TAILS.map(t => chipOf(t, t)).join('');
+
+  const head = `<div class="rk-top">
+    <div class="rk-field">
+      <label>开奖号码（只开 1 个，1–49）</label>
+      <input id="stlno" class="rk-no" type="number" min="1" max="49" step="1" placeholder="21" value="${SETTLE_NO}">
+    </div>
+    <div class="rk-field">
+      <label>赔率倍数</label>
+      <input id="stlodds" class="rk-odds" type="number" min="1" step="1" value="${ODDS}">
+    </div>
+    <div class="rk-field" style="flex:1 1 320px;min-width:0">
+      <label>平特开出哪些生肖 / 尾数（可多选，各最多 ${PT_MAX_PICK} 个）</label>
+      <div class="rk-ptpick">
+        <div class="chips">${ptChips}</div>
+        <div class="pt-chip-hint">已选 <b>${SETTLE_PT.length}</b> / ${PT_MAX_PICK} 肖 · 同一生肖开几次都只赔一次 · 点一下选中，再点取消</div>
+      </div>
+    </div>
+    <div id="stl-result">${SETTLE_NO || SETTLE_PT.length ? stlCard(SETTLE_NO, SETTLE_PT) : '<span class="rk-hint">输入开奖号 / 点上平特生肖，立刻出这一期的账</span>'}</div>
+  </div>`;
+
+  return `<div class="section-h">
+      <span>开奖结算 <small class="sort-tip">　号码按赔率 ${ODDS} 倍 · 平特 1 斤赔 1 斤＋退本（马/尾 0.8，即 ×1.8）· 一期开 8 个号，最多 8 肖 ＋ 8 尾，重复只赔一次</small></span>
+      <small>台面总收 ${R} 斤 · 单号打平线 <b style="color:#0f172a">${Math.floor(limit)}</b> 斤
+        <span class="limit-expr">（${PT_IN_RISK ? `${fmtMoney(R)} − 最坏平特赔额 ${fmtMoney(worstPt)}` : `${fmtMoney(R)}`}）÷ ${ODDS} = ${(limit).toFixed(1)}</span>
+        · 当前超线 <b style="color:#b91c1c">${danger.length}</b> 个号</small>
+    </div>
+    <div class="card"><div class="body">${head}</div></div>
+
+    <div class="section-h">
+      <span>单号风险表 <small class="sort-tip">　按开出盈亏从小到大排，最危险的在最上面</small></span>
+      <button type="button" id="ptcalc" data-rkpt="1" class="rk-switch ${PT_IN_RISK ? 'on' : ''}"
+        title="${PT_IN_RISK ? '点一下改成只看号码' : '点一下把平特也算进来'}"><i>${PT_IN_RISK ? '✓' : '○'}</i>${PT_IN_RISK ? '号码 ＋ 平特' : '只看号码'}</button>
+      <small>盈亏${PT_IN_RISK ? '已' : '<b style="color:#b45309">未</b>'}按「最坏平特组合」扣减 · 单号打平线 <b style="color:#0f172a">${Math.floor(limit)}</b> 斤
+        <span class="limit-expr">＝（台面总收 ${fmtMoney(R)} − 最坏平特赔额 ${fmtMoney(worstPt)}）÷ ${ODDS}　※赔额不含退本</span></small>
+    </div>
+    <div class="rk-scroll tbl-wrap"><table>
+      <thead><tr>
+        <th style="text-align:left">号</th><th>生肖</th><th>注额</th><th>打平线</th><th>超线</th><th>该肖平特</th><th>开出盈亏</th><th>状态</th>
+      </tr></thead>
+      <tbody>${body}</tbody>
+    </table></div>
+
+    <div class="section-h">
+      <span>平特风险表 <small class="sort-tip">　生肖 ${PT_MAX_PICK} 个 ＋ 尾数 ${PT_MAX_PICK} 个，重复只赔一次</small></span>
+      <small>「若开出赔」${PT_IN_RISK ? '＝平特（赔＋退本）＋ 该肖最重号' : '＝仅平特（赔＋退本），不含号码'}　·　跟随上面的口径</small>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr>
+        <th style="text-align:left">生肖</th><th>当前平特</th><th>该肖最重号</th><th>系数</th><th>若开出赔</th><th>状态</th>
+      </tr></thead>
+      <tbody>${ptBody}</tbody>
+    </table></div>
+    <div class="rk-sum">
+      <div>最坏平特组合（赔＋退本）：${worstList} ＝ <b>${fmtMoney(worstCost)} 斤</b></div>
+      <div>号码最大赔付：<b>${maxRow.n} 号</b> ${maxRow.b} 斤 × ${ODDS} ＝ <b>${fmtMoney(maxNumPay)} 斤</b></div>
+      <div>两者同时发生：<b>${fmtMoney(maxNumPay + worstCost)} 斤</b> ／ 台面总收 <b>${fmtMoney(R)} 斤</b>　${
+        maxNumPay + worstCost > R
+          ? `<span class="bad">缺口 ${fmtMoney(maxNumPay + worstCost - R)} 斤</span>`
+          : '<span style="color:#15803d">最坏情况仍不亏</span>'
+      }</div>
+      <div style="color:#64748b">上表单号盈亏口径：<b>${PT_IN_RISK ? '号码 ＋ 平特赔额' : '仅号码'}</b>　·　平特盘额度（总收 − 号码最大赔付）＝ <b>${fmtMoney(ptBudget)} 斤</b>，最坏组合 <b>${fmtMoney(worstCost)} 斤</b>，${
+        ptGap > 0 ? `<span class="bad">超出 ${fmtMoney(ptGap)} 斤</span>` : `还剩 ${fmtMoney(-ptGap)} 斤空间`
+      }</div>
+    </div>
+    <div class="rk-legend">
+      <span><i style="background:#dcfce7"></i>安全：开出就赚</span>
+      <span><i style="background:#fef3c7"></i>临界 / 备选：再收就翻负，或排在第 5 名之外</span>
+      <span><i style="background:#fee2e2"></i>超线 / 最坏组合：已经要赔，得转单或对冲</span>
+      <span>号码超线 ${danger.length} 个 · 临界 ${warn.length} 个 · 平特最坏 ${worst.top.length} 项合计 ${fmtMoney(worstCost)} 斤</span>
+    </div>`;
+}
+
+function render(items, batches = [], pingte = []){
+  const {total, uniq, dims} = buildStats(items);
+  const ptTotal = pingte.reduce((s, p) => s + p.mult, 0);
+  const grand = total + ptTotal;
+  const hasNums = items.length > 0;
+  const out = document.getElementById('out');
+
+  const waveDim = dims.find(d => d.name === '波色');
+  const elemDim = dims.find(d => d.name === '五行');
+  const zodiacDim = dims.find(d => d.name === '生肖');
+
+  const topZodiac = zodiacDim.order.map(k => [k, zodiacDim.map.get(k) || 0])
+                                   .sort((a,b) => b[1] - a[1])
+                                   .filter(x => x[1] > 0)
+                                   .slice(0, 3)
+                                   .map(x => `${x[0]}${x[1]}`).join(' / ');
+
+  const maxIt = hasNums ? items.reduce((a, b) => b.mult > a.mult ? b : a, items[0]) : null;
+  const minIt = hasNums ? items.reduce((a, b) => b.mult < a.mult ? b : a, items[0]) : null;
+  const sortLabel = SORT.key === 'mult'
+    ? (SORT.dir === 'desc' ? '当前：斤数 由大到小' : '当前：斤数 由小到大')
+    : '当前：号码 1–49';
+
+  const summary = `<div class="summary">
+    <div class="stat"><span>总斤数（号码＋平特）</span><b>${grand}<i>斤</i></b></div>
+    <div class="stat"><span>号码斤数</span><b>${total}<i>斤</i></b></div>
+    <div class="stat"><span>平特斤数</span><b>${ptTotal}<i>斤</i></b></div>
+    <div class="stat"><span>号码数</span><b>${uniq}<i>个</i></b></div>
+  </div>`;
+
+  // 分布卡片：先放核心 5 个，再放生肖级分类
+  const core = dims.filter(d => ['生肖','波色','五行','单双','大小','头数','尾数','合数单双','合大合小','家禽野兽','门','段'].includes(d.name));
+  const extra = dims.filter(d => !core.includes(d));
+
+  const batchTable = batches.length > 1 ? `
+    <div class="section-h">批次汇总 <small>共 ${batches.length} 批，同号自动叠加</small></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>批次</th><th style="text-align:left">输入</th><th>号码数</th><th>号码斤</th><th>平特斤</th></tr></thead>
+      <tbody>${batches.map(b => `<tr>
+        <td>第 ${b.idx} 批</td>
+        <td class="mono dim" style="text-align:left;font-size:11.5px">${esc(b.raw)}</td>
+        <td class="mono">${b.items.length}</td>
+        <td class="mono jin">${b.total} 斤</td>
+        <td class="mono ${b.ptotal ? 'jin' : 'dim'}">${b.ptotal ? b.ptotal + ' 斤' : '—'}</td>
+      </tr>`).join('')}</tbody>
+      <tfoot><tr>
+        <td colspan="2" style="text-align:right;font-weight:600;color:#475569">累计 ${uniq} 个号</td>
+        <td class="mono dim">${uniq} 个</td>
+        <td class="mono jin">${total} 斤</td>
+        <td class="mono jin">${ptTotal} 斤</td>
+      </tr></tfoot>
+    </table></div>` : '';
+
+  /* 号码手动修正条（支持批量）：填一个或多个号码 + 加/减斤数 → 点确定，明细表立刻变 */
+  const adjKeys = Object.keys(ADJUST).map(Number).sort((a, b) => a - b);
+  const adjChips = adjKeys.length
+    ? `已改 ${adjKeys.length} 个：` + adjKeys.map(n =>
+        `<button type="button" class="adj-chip" data-adjundo="${n}" title="点一下撤销 ${n} 号的修正">${n} 号 ${ADJUST[n] > 0 ? '+' : ''}${ADJUST[n]}<i>×</i></button>`
+      ).join('') + (adjKeys.length > 1
+        ? `<button type="button" class="adj-chip adj-chip-clr" data-adjclear="1" title="撤销全部号码修正">全部撤销<i>×</i></button>`
+        : '')
+    : '';
+  const adjBar = `<div class="adj-bar">
+    <span class="lb">号码手动改</span>
+    <label>号码<input id="adjno" class="adj-in adj-n" type="text" maxlength="120" inputmode="numeric" placeholder="1 5 10 或 1-49" value="${esc(ADJ_IN.no)}" title="可一次填多个：空格 / 逗号分隔，或写 1-49、全部"></label>
+    <label>加 / 减<input id="adjdelta" class="adj-in adj-d" type="number" step="1" inputmode="decimal" placeholder="-95" value="${ADJ_IN.d}"></label>
+    <button type="button" id="adjok">确定</button>
+    <span class="adj-prev" id="adjprev">填号码和斤数，点确定立即改</span>
+    ${adjChips ? `<span class="adj-list">${adjChips}</span>` : ''}
+  </div>`;
+
+  const numsBlocks = hasNums ? `
+    <div class="section-h">
+      <span>每个号多少斤
+        <small class="sort-tip">　${sortLabel} · 点表头可切换</small>
+      </span>
+      <small>共 ${items.length} 个号 · ${total} 斤　|　最多 <b>${String(maxIt.no).padStart(2,'0')}号 ${maxIt.mult}斤</b> · 最少 <b>${String(minIt.no).padStart(2,'0')}号 ${minIt.mult}斤</b></small>
+    </div>
+    ${adjBar}
+    ${detailTable(items, total, batches)}
+
+    <div class="section-h">
+      <span>生肖统计 <small class="sort-tip">　按生肖汇总 · 点表头可切换</small></span>
+      <small>${zodiacGroups(items).length} 个生肖有下注 · 每个号按所属生肖归入（不含平特）</small>
+    </div>
+    ${zodiacTable(items, total)}` : '';
+
+  const numsBlocks2 = hasNums ? `
+    <div class="section-h">各属性分布 <small>按斤数 / 占比 · 不含平特</small></div>
+    <div class="grid">
+      ${core.map(d => distCard(d, total)).join('')}
+    </div>
+
+    <div class="section-h">波色构成 <small>环形图</small></div>
+    <div class="card">
+      <div class="body">
+        <div class="chart-grid">
+          <div style="text-align:center">${donutSVG(waveDim, total)}</div>
+          <div>
+            ${waveDim.order.map(k => {
+              const v = waveDim.map.get(k) || 0;
+              return `<div class="legend"><div>
+                <i style="background:${HEX[k]}"></i>${k}
+                <span>${v} 斤 · ${pct(v, total)}</span>
+              </div></div>`;
+            }).join('')}
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--soft)">
+              <div style="font-size:11.5px;color:var(--muted);margin-bottom:10px">五行斤数分布</div>
+              ${vbarChart(elemDim, total)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-h">生肖细分 <small>来自灵码表分类</small></div>
+    <div class="grid">
+      ${extra.map(d => distCard(d, total)).join('')}
+    </div>` : '';
+
+  /* 平特手动修正条（支持批量）：打生肖/尾数 + 加/减斤数 → 点确定，平特表立刻变 */
+  const ptAdjKeys = Object.keys(PT_ADJUST);
+  const ptAdjChips = ptAdjKeys.length
+    ? `已改 ${ptAdjKeys.length} 个：` + ptAdjKeys.map(z =>
+        `<button type="button" class="adj-chip" data-ptundo="${z}" title="点一下撤销「${z}」的平特修正">${z} ${PT_ADJUST[z] > 0 ? '+' : ''}${PT_ADJUST[z]}<i>×</i></button>`
+      ).join('') + (ptAdjKeys.length > 1
+        ? `<button type="button" class="adj-chip adj-chip-clr" data-ptclear="1" title="撤销全部平特修正">全部撤销<i>×</i></button>`
+        : '')
+    : '';
+  const ptAdjBar = `<div class="adj-bar">
+    <span class="lb">平特手动改</span>
+    <label>生肖/尾<input id="ptadjz" class="adj-in adj-zs" type="text" maxlength="30" placeholder="狗猴马 / 8尾" value="${esc(PTADJ_IN.z)}" title="可一次多个：狗猴马、狗 猴 马、狗,猴,马，或尾数 8尾"></label>
+    <label>加 / 减<input id="ptadjdelta" class="adj-in adj-d" type="number" step="1" inputmode="decimal" placeholder="-200" value="${PTADJ_IN.d}"></label>
+    <button type="button" id="ptadjok">确定</button>
+    <span class="adj-prev" id="ptadjprev">打生肖＋斤数，点确定立即改</span>
+    ${ptAdjChips ? `<span class="adj-list">${ptAdjChips}</span>` : ''}
+  </div>`;
+
+  const ptBlock = (ptTotal || ptAdjKeys.length) ? `
+    <div class="section-h">
+      <span>平特统计 <small class="sort-tip">　12 个生肖 ＋ 有注的尾数，单独计</small></span>
+      <small>平特不进号码、不进生肖统计 · 合计 ${ptTotal} 斤</small>
+    </div>
+    ${ptAdjBar}
+    ${pingteTable(pingte, ptTotal, batches)}` : '';
+
+  const html = `
+    ${summary}
+    ${riskBlock(items, pingte, total, ptTotal)}
+    ${batchTable}
+    ${numsBlocks}
+    ${ptBlock}
+    ${numsBlocks2}
+  `;
+  out.innerHTML = html;
+  /* 重渲染后把修正条的预览补回来（输入框的值是保留的，别让提示停在上一次的默认文案） */
+  try { adjPreview(); ptAdjPreview(); } catch(e){}
+}
+
+/* ============ 5. 事件 ============ */
+const $ = s => document.querySelector(s);
+const LS_KEY = 'liuhe_batches_v1';
+
+/* 早期版本自动预置过的两批示例，现已废弃：命中就清掉，不再显示 */
+const LEGACY_PRELOAD = [
+  '28.40.26.29.24.48.13.19.23各5',
+  '23.05.17.29.15.27.10.22.12.24.07.19.31.09.21.13.25各数5'
+];
+const isLegacy = raw => {
+  const s = String(raw || '').replace(/…$/, '');
+  return LEGACY_PRELOAD.some(r => s.slice(0, 20) === r.slice(0, 20));
+};
+
+/* 已加入的批次（持久化，未点清空一直累计） */
+let HISTORY = [];
+(function initHistory(){
+  let stored = null;
+  try { stored = LSX.getItem(LS_KEY); } catch(e){}
+  if (stored === null){ HISTORY = []; return; }
+  try { HISTORY = JSON.parse(stored) || []; } catch(e){ HISTORY = []; }
+  // 清掉旧版自动塞进去的示例批次，只留老板自己加的
+  const kept = HISTORY.filter(b => !isLegacy(b.raw));
+  if (kept.length !== HISTORY.length){
+    HISTORY = kept;
+    setTimeout(() => persistHistory(), 0);   // 存储层变量在后面声明，推到下一轮再写
+  }
+})();
+
+/* ============ 存储层 ============
+   直接双击打开文件：数据存浏览器 localStorage（这台电脑这浏览器）
+   用 serve.mjs 起服务后：数据存服务器上的 data.json，同局域网所有设备共用一份
+*/
+let API_MODE = false;
+
+/* 本机最后一次写盘的时间戳。加载时拿它跟 data.json 里的 savedAt 比新旧：
+   本机更新 = 最后那一批还没 POST 出去（点完立刻关页面 / 断网），以本机为准推上去，
+   不再被旧的服务端数据反向覆盖。 */
+const LS_TS = 'liuhe_savedAt_v1';
+const SAVE_TIMEOUT = 4000;
+
+let saveSeq = 0;      // 写入序号：旧请求回来时不许覆盖新请求的状态
+let retryN = 0;       // 失败自动重试次数
+let dirty = false;    // 有改动还没确认落进 data.json
+
+function localTs(){
+  try { return LSX.getItem(LS_TS) || ''; } catch(e){ return ''; }
+}
+function setLocalTs(ts){
+  try { LSX.setItem(LS_TS, ts); } catch(e){}
+}
+function hhmmss(iso){
+  const d = iso ? new Date(iso) : new Date();
+  if (isNaN(d)) return '';
+  const p = n => String(n).padStart(2, '0');
+  return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+function saveBadge(state, iso){
+  const b = document.getElementById('saveBadge');
+  if (!b) return;
+  if (state === 'saving'){ b.textContent = '保存中…'; b.dataset.tone = 'saving'; return; }
+  if (state === 'ok'){ b.textContent = '已保存 ' + hhmmss(iso); b.dataset.tone = 'ok'; return; }
+  if (state === 'fail'){ b.textContent = '写盘失败 · 重试中'; b.dataset.tone = 'fail'; return; }
+  b.textContent = '仅存本机浏览器'; b.dataset.tone = 'local';
+}
+
+async function apiGet(){
+  try {
+    const r = await fetch('api/state' + wsQS, {cache: 'no-store'});
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e){ return null; }
+}
+
+function statePayload(ts){
+  return {batches: HISTORY, rate: RATE, savedAt: ts};
+}
+
+async function apiPut(ts){
+  if (!API_MODE) return false;
+  const ctl = (typeof AbortController === 'function') ? new AbortController() : null;
+  const timer = ctl ? setTimeout(() => { try { ctl.abort(); } catch(e){} }, SAVE_TIMEOUT) : null;
+  try {
+    const r = await fetch('api/state' + wsQS, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(statePayload(ts)),
+      signal: ctl ? ctl.signal : undefined
+    });
+    return r.ok;
+  } catch(e){
+    return false;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+/* 关页面 / 关窗口的最后一跳。
+   sendBeacon 交给浏览器发送，页面卸载了也照样发得出去；不发成功就退到同步 XHR。 */
+function flushBeacon(){
+  if (WS_STATE.dead || !API_MODE || !dirty) return;
+  const body = JSON.stringify(statePayload(new Date().toISOString()));
+  try {
+    if (navigator.sendBeacon){
+      const blob = new Blob([body], {type: 'application/json'});
+      if (navigator.sendBeacon('api/state' + wsQS, blob)){ dirty = false; return; }
+    }
+  } catch(e){}
+  try {
+    const x = new XMLHttpRequest();
+    x.open('POST', 'api/state' + wsQS, false);
+    x.setRequestHeader('Content-Type', 'application/json');
+    x.send(body);
+    if (x.status >= 200 && x.status < 300) dirty = false;
+  } catch(e){}
+}
+
+/* 保存主入口：本机 localStorage 同步落盘 → 再推 data.json → 回写右上角状态 */
+async function persistHistory(){
+  if (WS_STATE.dead) return;              // 这个账本已被别的窗口删掉，不许再写回去
+  const ts = new Date().toISOString();
+  try { LSX.setItem(LS_KEY, JSON.stringify(HISTORY)); } catch(e){}
+  setLocalTs(ts);
+
+  if (!API_MODE){ saveBadge('local'); dirty = false; return; }
+
+  dirty = true;
+  retryN = 0;
+  const seq = ++saveSeq;
+  saveBadge('saving');
+
+  const ok = await apiPut(ts);
+  if (seq !== saveSeq) return;            // 期间又点了新的写入，本次状态作废
+  if (ok){ dirty = false; saveBadge('ok', ts); return; }
+
+  saveBadge('fail');
+  scheduleRetry(seq);
+}
+
+function scheduleRetry(seq){
+  if (retryN >= 5) return;
+  const wait = 600 * Math.pow(2, retryN);
+  retryN++;
+  setTimeout(async () => {
+    if (!API_MODE || !dirty || seq !== saveSeq) return;
+    const ts = new Date().toISOString();
+    saveBadge('saving');
+    const ok = await apiPut(ts);
+    if (seq !== saveSeq) return;
+    if (ok){ dirty = false; retryN = 0; setLocalTs(ts); saveBadge('ok', ts); }
+    else { saveBadge('fail'); scheduleRetry(seq); }
+  }, wait);
+}
+
+/* 关浏览器、关 exe 窗口、平板切后台，都补发一次 */
+window.addEventListener('pagehide', flushBeacon);
+window.addEventListener('beforeunload', flushBeacon);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') flushBeacon();
+});
+
+function setBadge(text, tone){
+  const b = document.getElementById('storeBadge');
+  if (!b) return;
+  b.textContent = text;
+  b.dataset.tone = tone || '';
+}
+
+/* 服务端在线就切共享存储。谁新听谁的：
+   本机时间戳 > data.json 的 savedAt → 本机有没写完的批次，推上去；
+   否则听服务端的（换设备、换浏览器时本机是空的，自然听服务端）。 */
+(async function syncServer(){
+  const data = await apiGet();
+  if (!data){ setBadge('本机浏览器存储', 'local'); saveBadge('local'); return; }
+  API_MODE = true;
+  setBadge('共享存储 · 局域网同步', 'shared');
+
+  const list = Array.isArray(data.batches) ? data.batches.filter(b => b && !isLegacy(b.raw)) : null;
+  const sRate = (isFinite(+data.rate) && +data.rate > 0) ? +data.rate : RATE;
+  const theirs = data.savedAt || '';
+  const mine = localTs();
+  const localNewer = mine && (!theirs || mine > theirs);
+
+  if (!list || !list.length){
+    if (HISTORY.length) persistHistory();
+    else saveBadge('ok', theirs);
+    return;
+  }
+
+  // 本机更新且确实有批次 → 说明最后一批没落进 data.json，以本机为准
+  if (localNewer && HISTORY.length){ persistHistory(); return; }
+
+  setLocalTs(theirs);   // 服务端为先，记下它的时间戳，后续比较用
+
+  if (JSON.stringify(list) !== JSON.stringify(HISTORY) || sRate !== RATE){
+    HISTORY = list;
+    RATE = sRate;
+    try { LSX.setItem(LS_KEY, JSON.stringify(HISTORY)); } catch(e){}
+    try { LSX.setItem('liuhe_rate_v1', String(RATE)); } catch(e){}
+    renderHistory();
+    recompute();
+  }
+  saveBadge('ok', theirs);
+})();
+
+function totalJin(){
+  return HISTORY.reduce((s, b) => s + b.total, 0);
+}
+function totalPt(){
+  const all = [];
+  HISTORY.forEach(b => (b.pingte || []).forEach(p => all.push(p)));
+  return applyPtAdjust(mergePingte(all)).reduce((s, p) => s + p.mult, 0);
+}
+
+function renderHistory(){
+  const box = $('#history');
+  if (!HISTORY.length){ box.innerHTML = ''; return; }
+  const rows = HISTORY.map((b, i) => `
+    <div class="hist-item">
+      <span class="idx">${i + 1}</span>
+      <code title="${esc(b.raw)}">${esc(b.raw)}</code>
+      <span class="sum">${b.items.length}号 · ${b.total}斤${b.ptotal ? ` · 平特 ${b.ptotal}斤` : ''}</span>
+      <button class="del" data-i="${i}" title="删除本批">×</button>
+    </div>`).join('');
+  const adjN = Object.keys(ADJUST).length;
+  const ptAdjN = Object.keys(PT_ADJUST).length;
+  const adjTxt = (adjN ? `<b style="color:#b45309">手动改过 ${adjN} 个号</b>` : '')
+    + (ptAdjN ? `${adjN ? ' · ' : ''}<b style="color:#b45309">平特改过 ${ptAdjN} 个肖</b>` : '');
+  box.innerHTML = `<div class="hist">
+    <div class="hist-h"><span>已累计 ${HISTORY.length} 批（未清空前一直叠加）${adjTxt ? ` · ${adjTxt}` : ''}</span><b>${totalJin()} 斤${totalPt() ? ` ＋平特 ${totalPt()} 斤` : ''}</b></div>
+    ${rows}
+  </div>`;
+}
+
+const EMPTY_HTML = `<div class="empty">还没有批次。输入一批号码，点「加入批次」。
+  <div style="margin-top:8px;font-size:12px;color:#94a3b8;line-height:1.7">
+    换过打开方式（文件 ↔ 本地服务）、或换过电脑，旧记录不会自动过来：<br>
+    在原页面点「导出备份」，到这里点「导入备份」即可。
+  </div>
+</div>`;
+
+function recompute(){
+  const all = [], ptAll = [];
+  HISTORY.forEach(b => {
+    all.push(...b.items);
+    (b.pingte || []).forEach(p => ptAll.push(p));
+  });
+  const pt = applyPtAdjust(mergePingte(ptAll));
+  if (!all.length && !pt.length){ $('#out').innerHTML = EMPTY_HTML; return; }
+  render(applyAdjust(mergeItems(all)),
+    HISTORY.map((b, i) => ({idx: i + 1, raw: b.raw, items: b.items, total: b.total, ptotal: b.ptotal || 0, pingte: b.pingte || []})),
+    pt);
+}
+
+/* 表头点击排序：斤数在 大到小 / 小到大 之间切；点号码回到 1–49 */
+$('#out').addEventListener('click', e => {
+  const pth = e.target.closest('th[data-psort]');
+  if (pth){
+    const k = pth.dataset.psort;
+    if (k === 'idx'){
+      PTSORT = (PTSORT.key === 'idx')
+        ? {key: 'idx', dir: PTSORT.dir === 'asc' ? 'desc' : 'asc'}
+        : {key: 'idx', dir: 'asc'};
+    } else {
+      PTSORT = (PTSORT.key === 'jin')
+        ? {key: 'jin', dir: PTSORT.dir === 'desc' ? 'asc' : 'desc'}
+        : {key: 'jin', dir: 'desc'};
+    }
+    recompute();
+    return;
+  }
+
+  const zth = e.target.closest('th[data-zsort]');
+  if (zth){
+    const k = zth.dataset.zsort;
+    if (k === 'idx'){
+      ZSORT = (ZSORT.key === 'idx')
+        ? {key: 'idx', dir: ZSORT.dir === 'asc' ? 'desc' : 'asc'}
+        : {key: 'idx', dir: 'asc'};
+    } else {
+      ZSORT = (ZSORT.key === 'jin')
+        ? {key: 'jin', dir: ZSORT.dir === 'desc' ? 'asc' : 'desc'}
+        : {key: 'jin', dir: 'desc'};
+    }
+    recompute();
+    return;
+  }
+
+  const th = e.target.closest('th[data-sort]');
+  if (!th) return;
+  const key = th.dataset.sort;
+  if (key === 'no'){
+    SORT = (SORT.key === 'no')
+      ? {key: 'no', dir: SORT.dir === 'asc' ? 'desc' : 'asc'}
+      : {key: 'no', dir: 'asc'};
+  } else {
+    SORT = (SORT.key === 'mult')
+      ? {key: 'mult', dir: SORT.dir === 'desc' ? 'asc' : 'desc'}
+      : {key: 'mult', dir: 'desc'};
+  }
+  recompute();
+});
+
+/* 改单价：只更新金额文本，不重渲染（保住输入焦点） */
+function applyRate(){
+  document.querySelectorAll('[data-amt]').forEach(el => {
+    const n = parseFloat(el.dataset.amt) || 0;
+    const plus = parseFloat(el.dataset.plus) || 0;   // 平特是固定金额，不跟单价走
+    el.textContent = fmtMoney(amountOf(n) + plus);
+  });
+  document.querySelectorAll('[data-jin]').forEach(el => {
+    el.innerHTML = `×${RATE} = <b>${money(parseFloat(el.dataset.jin) || 0)}</b>`;
+  });
+  document.querySelectorAll('[data-jinchip]').forEach(el => {
+    el.textContent = `×${RATE} = ${money(parseFloat(el.dataset.jinchip) || 0)}`;
+  });
+  document.querySelectorAll('.rl').forEach(el => { el.textContent = `×${RATE}`; });
+}
+
+/* 结算卡局部刷新：不重绘整块，保住输入焦点 */
+function paintSettle(){
+  const box = document.getElementById('stl-result');
+  if (!box) return;
+  box.innerHTML = (SETTLE_NO || SETTLE_PT.length)
+    ? stlCard(+SETTLE_NO, SETTLE_PT)
+    : '<span class="rk-hint">输入开奖号 / 点上平特生肖，立刻出这一期的账</span>';
+}
+
+function syncPickUI(over){
+  document.querySelectorAll('[data-ptpick]').forEach(btn => {
+    btn.classList.toggle('on', SETTLE_PT.includes(btn.dataset.ptpick));
+  });
+  const hint = document.querySelector('.pt-chip-hint');
+  if (hint){
+    const zs = SETTLE_PT.filter(k => !isPtTail(k)).length;
+    const ts = SETTLE_PT.filter(k => isPtTail(k)).length;
+    hint.innerHTML = over
+      ? `<span style="color:#b91c1c">生肖、尾数各最多 ${PT_MAX_PICK} 个；同一样开几次也只赔一次，不用重复点</span>`
+      : `已选 生肖 <b>${zs}</b> / ${PT_MAX_PICK} · 尾数 <b>${ts}</b> / ${PT_MAX_PICK} · 同一个生肖/尾开几次都只赔一次 · 点一下选中，再点取消`;
+  }
+}
+
+/* 开奖号实时结算（只更新结果区） */
+$('#out').addEventListener('input', e => {
+  if (e.target.id === 'stlno'){ SETTLE_NO = e.target.value; paintSettle(); return; }
+
+  /* 单个号修正条：边填边预览「原值 → 新值」 */
+  if (e.target.id === 'adjno' || e.target.id === 'adjdelta'){
+    const ni = document.getElementById('adjno'), di = document.getElementById('adjdelta');
+    ADJ_IN.no = ni ? ni.value : '';
+    ADJ_IN.d = di ? di.value : '';
+    ADJ_IN.msg = '';
+    adjPreview();
+    return;
+  }
+
+  /* 单个平特修正条：边打边预览 */
+  if (e.target.id === 'ptadjz' || e.target.id === 'ptadjdelta'){
+    const zi = document.getElementById('ptadjz'), di = document.getElementById('ptadjdelta');
+    PTADJ_IN.z = zi ? zi.value : '';
+    PTADJ_IN.d = di ? di.value : '';
+    PTADJ_IN.msg = '';
+    ptAdjPreview();
+    return;
+  }
+});
+
+/* 号码修正：点「确定」把加减量叠到这些号（支持批量）；点橙chip撤销单个，点「全部撤销」清空 */
+$('#out').addEventListener('click', e => {
+  const okBtn = e.target.closest ? e.target.closest('#adjok') : null;
+  if (okBtn){
+    const ni = document.getElementById('adjno'), di = document.getElementById('adjdelta');
+    const list = parseNoList(ni ? ni.value : '');
+    const raw = di ? String(di.value).trim() : '';
+    if (!list.length){ adjFlash('先填号码，多个用空格/逗号分开，也可写 1-49 或 全部'); return; }
+    if (raw === '' || !isFinite(Number(raw))){ adjFlash('填要加/减多少斤，减写负数，如 -95'); return; }
+    const d = Math.round(Number(raw) * 100) / 100;
+    if (d === 0){ adjFlash('加减量不能是 0'); return; }
+    list.forEach(no => {
+      const next = Math.round(((ADJUST[no] || 0) + d) * 100) / 100;
+      if (next === 0) delete ADJUST[no]; else ADJUST[no] = next;
+    });
+    saveAdjust();
+    ADJ_IN = {no: ni ? String(ni.value).trim() : '', d: '', msg: `✓ 写入 ${list.length} 个号 · 每个 ${d > 0 ? '+' : ''}${d} 斤`};
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    recompute();
+    window.scrollTo(0, y);
+    return;
+  }
+  const clrBtn = e.target.closest ? e.target.closest('[data-adjclear]') : null;
+  if (clrBtn){
+    ADJUST = {};
+    saveAdjust();
+    ADJ_IN = {no: '', d: ''};
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    recompute();
+    window.scrollTo(0, y);
+    return;
+  }
+  const unBtn = e.target.closest ? e.target.closest('[data-adjundo]') : null;
+  if (unBtn){
+    const no = +unBtn.dataset.adjundo;
+    if (!isFinite(no)) return;
+    delete ADJUST[no];
+    saveAdjust();
+    ADJ_IN = {no: '', d: ''};
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    recompute();
+    window.scrollTo(0, y);
+  }
+});
+
+/* 平特修正：点「确定」把加减量叠到这些生肖（支持批量）；点橙chip撤销单个，点「全部撤销」清空 */
+$('#out').addEventListener('click', e => {
+  const okBtn = e.target.closest ? e.target.closest('#ptadjok') : null;
+  if (okBtn){
+    const zi = document.getElementById('ptadjz'), di = document.getElementById('ptadjdelta');
+    const list = parseZodiacList(zi ? zi.value : '');
+    const raw = di ? String(di.value).trim() : '';
+    if (!list.length){ ptAdjFlash('打生肖（狗猴马）或尾数（8尾）'); return; }
+    if (raw === '' || !isFinite(Number(raw))){ ptAdjFlash('填要加/减多少斤，减写负数，如 -200'); return; }
+    const d = Math.round(Number(raw) * 100) / 100;
+    if (d === 0){ ptAdjFlash('加减量不能是 0'); return; }
+    list.forEach(z => {
+      const next = Math.round(((PT_ADJUST[z] || 0) + d) * 100) / 100;
+      if (next === 0) delete PT_ADJUST[z]; else PT_ADJUST[z] = next;
+    });
+    savePtAdjust();
+    PTADJ_IN = {z: zi ? String(zi.value).trim() : '', d: '', msg: `✓ 写入 ${list.length} 个平特 · 每个 ${d > 0 ? '+' : ''}${d} 斤`};
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    recompute();
+    window.scrollTo(0, y);
+    return;
+  }
+  const pClr = e.target.closest ? e.target.closest('[data-ptclear]') : null;
+  if (pClr){
+    PT_ADJUST = {};
+    savePtAdjust();
+    PTADJ_IN = {z: '', d: ''};
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    recompute();
+    window.scrollTo(0, y);
+    return;
+  }
+  const pUn = e.target.closest ? e.target.closest('[data-ptundo]') : null;
+  if (pUn){
+    const z = pUn.dataset.ptundo;
+    if (!z) return;
+    delete PT_ADJUST[z];
+    savePtAdjust();
+    PTADJ_IN = {z: '', d: ''};
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    recompute();
+    window.scrollTo(0, y);
+  }
+});
+
+/* 风险口径开关：单号表 / 平特表 各一个按钮，点哪个都同步切换 */
+$('#out').addEventListener('click', e => {
+  const btn = e.target.closest ? e.target.closest('[data-rkpt]') : null;
+  if (!btn) return;
+  const y = window.scrollY || document.documentElement.scrollTop || 0;
+  PT_IN_RISK = !PT_IN_RISK;
+  try { LSX.setItem('liuhe_ptrisk_v1', PT_IN_RISK ? '1' : '0'); } catch(err){}
+  recompute();
+  window.scrollTo(0, y);
+});
+
+/* 平特多选：点一下选中，再点取消；生肖、尾数各最多 8 个 */
+$('#out').addEventListener('click', e => {
+  const btn = e.target.closest ? e.target.closest('[data-ptpick]') : null;
+  if (!btn) return;
+  const z = btn.dataset.ptpick;
+  const i = SETTLE_PT.indexOf(z);
+  let over = false;
+  if (i >= 0) SETTLE_PT.splice(i, 1);
+  else {
+    const same = SETTLE_PT.filter(k => isPtTail(k) === isPtTail(z)).length;
+    if (same < PT_MAX_PICK) SETTLE_PT.push(z);
+    else over = true;
+  }
+  syncPickUI(over);
+  paintSettle();
+});
+
+/* 改赔率：重算整块风控 */
+$('#out').addEventListener('change', e => {
+  if (e.target.id !== 'stlodds') return;
+  const v = Math.round(+e.target.value);
+  if (!isFinite(v) || v < 2) return;
+  ODDS = v;
+  try { LSX.setItem('liuhe_odds_v1', String(ODDS)); } catch(err){}
+  recompute();
+});
+
+/* 加入批次 */
+$('#go').addEventListener('click', () => {
+  const raw = $('#input').value.trim();
+  const msg = $('#msg');
+  if (!raw){ msg.innerHTML = '<div class="err">先输入号码。</div>'; return; }
+
+  const {batches, bad} = parseAll(raw);
+  if (!batches.length){
+    msg.innerHTML = '<div class="err">没解析到 1–49 范围内的号码或平特。</div>';
+    return;
+  }
+  batches.forEach(b => HISTORY.push({raw: b.raw, items: b.items, total: b.total, pingte: b.pingte, ptotal: b.ptotal}));
+  persistHistory();
+  $('#input').value = '';
+  msg.innerHTML = (bad.length ? `<div class="err">已忽略超出 1–49：${bad.join(' ')}</div>` : '')
+    + `<div class="ok">已加入 ${batches.length} 批，累计 ${HISTORY.length} 批 / 号码 ${totalJin()} 斤${totalPt() ? ` ＋平特 ${totalPt()} 斤` : ''}</div>`;
+  renderHistory();
+  recompute();
+});
+
+/* 删除单批 */
+$('#history').addEventListener('click', e => {
+  const btn = e.target.closest('.del');
+  if (!btn) return;
+  const i = +btn.dataset.i;
+  HISTORY.splice(i, 1);
+  persistHistory();
+  renderHistory();
+  recompute();
+});
+
+/* 清空全部 —— 唯一的归零点 */
+$('#clear').addEventListener('click', () => {
+  if (HISTORY.length && !confirm(`确定清空全部 ${HISTORY.length} 批记录？`)) return;
+  HISTORY = [];
+  ADJUST = {};
+  PT_ADJUST = {};
+  ADJ_IN = {no: '', d: ''};
+  PTADJ_IN = {z: '', d: ''};
+  saveAdjust();
+  savePtAdjust();
+  persistHistory();
+  $('#input').value = '';
+  $('#msg').innerHTML = '';
+  renderHistory();
+  $('#out').innerHTML = EMPTY_HTML;
+});
+
+/* ================= 备份：导出 =================
+   桌面 Chrome / exe：直接下载 .json
+   iPhone / iPad：走系统分享面板（可「存储到文件」、发微信、发邮件给自己）
+   iOS「添加到主屏幕」的 App 模式没有下载目录，a.download 会静默失败，
+   所以 iOS 上先试分享，不支持再弹可复制文本，绝不静默丢数据。
+*/
+const BK_UA = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
+const BK_IS_IOS = /iPad|iPhone|iPod/.test(BK_UA)
+  || (typeof navigator !== 'undefined' && navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+function backupName(){
+  const d = new Date(), p = n => String(n).padStart(2, '0');
+  return `号码斤数备份_${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.json`;
+}
+
+function buildBackup(){
+  let pick = null;
+  try { pick = JSON.parse(LSX.getItem('liuhe_pick_v1') || 'null'); } catch(e){}
+  return {
+    app: 'liuhe-stats',
+    version: 3,
+    exportedAt: new Date().toISOString(),
+    rate: RATE,
+    pick: pick,
+    adjust: ADJUST,
+    ptAdjust: PT_ADJUST,
+    batches: HISTORY
+  };
+}
+
+/* iOS App 模式兜底：把备份摊成可复制文本 */
+function showBackupModal(text, name){
+  let m = document.getElementById('bkModal');
+  if (!m){
+    m = document.createElement('div');
+    m.id = 'bkModal';
+    m.innerHTML =
+      '<div class="bk-mask"></div>' +
+      '<div class="bk-box">' +
+        '<div class="bk-h"></div>' +
+        '<p class="bk-tip">这台设备没有下载目录（主屏 App 模式），备份已生成，二选一：<br>' +
+        '① 点「复制全部」→ 粘到备忘录 / 微信文件传输助手<br>' +
+        '② 长按文本框 → 全选 → 拷贝</p>' +
+        '<textarea id="bkText" readonly spellcheck="false"></textarea>' +
+        '<div class="bk-btns">' +
+          '<button class="btn" id="bkCopy">复制全部</button>' +
+          '<button class="btn primary" id="bkClose">关闭</button>' +
+        '</div>' +
+        '<div class="bk-msg" id="bkMsg"></div>' +
+      '</div>';
+    document.body.appendChild(m);
+    m.querySelector('#bkClose').addEventListener('click', () => { m.style.display = 'none'; });
+    m.querySelector('#bkCopy').addEventListener('click', async () => {
+      const ta = m.querySelector('#bkText'), out = m.querySelector('#bkMsg');
+      ta.focus(); ta.select(); ta.setSelectionRange(0, ta.value.length);
+      let ok = false;
+      try { await navigator.clipboard.writeText(ta.value); ok = true; } catch(e){}
+      if (!ok){ try { ok = document.execCommand('copy'); } catch(e){} }
+      out.textContent = ok ? '已复制，去粘贴保存吧' : '请手动长按文本框全选复制';
+    });
+  }
+  m.querySelector('.bk-h').textContent = '备份文件 · ' + name;
+  m.querySelector('#bkText').value = text;
+  m.querySelector('#bkMsg').textContent = '';
+  m.style.display = 'block';
+}
+
+$('#export').addEventListener('click', async () => {
+  const msg = $('#msg');
+  if (!HISTORY.length){
+    msg.innerHTML = '<div class="err">还没有批次，没什么可导出的。</div>';
+    return;
+  }
+  const text = JSON.stringify(buildBackup(), null, 2);
+  const name = backupName();
+  const sum = `号码 ${totalJin()} 斤${totalPt() ? ` ＋平特 ${totalPt()} 斤` : ''}`;
+
+  /* 1) 系统分享面板：iOS Safari / 安卓 Chrome 支持，能直接「存储到文件」 */
+  try {
+    const file = new File([text], name, { type: 'application/json' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })){
+      await navigator.share({ files: [file], title: '号码斤数备份', text: `${HISTORY.length} 批` });
+      msg.innerHTML = `<div class="ok">已保存 ${HISTORY.length} 批 / ${sum}</div>`;
+      return;
+    }
+  } catch(err){
+    if (err && err.name === 'AbortError'){
+      msg.innerHTML = '<div class="err">已取消分享。</div>';
+      return;
+    }
+    /* 其他异常继续走下载 / 复制 */
+  }
+
+  /* 2) iOS 没有下载器：直接给可复制文本，避免点了没反应 */
+  if (BK_IS_IOS){
+    showBackupModal(text, name);
+    msg.innerHTML = `<div class="ok">已生成备份文本 · ${HISTORY.length} 批 / ${sum}</div>`;
+    return;
+  }
+
+  /* 3) 桌面 / exe：正常下载 */
+  try {
+    const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    msg.innerHTML = `<div class="ok">已导出 ${HISTORY.length} 批 / ${sum}</div>`;
+  } catch(e){
+    showBackupModal(text, name);
+  }
+});
+
+/* 导入备份：默认并入，选「确定」则覆盖
+   iOS 的「文件」App 对 accept=".json" 常把文件显示成灰色不可选，
+   所以手机上放开成任意文件，桌面仍然只筛 json。 */
+$('#import').addEventListener('click', () => {
+  const inp = $('#file');
+  inp.accept = BK_IS_IOS ? '*/*' : '.json,application/json';
+  inp.click();
+});
+
+$('#file').addEventListener('change', async e => {
+  const f = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (!f) return;
+  const msg = $('#msg');
+  let data;
+  try { data = JSON.parse(await f.text()); }
+  catch(err){ msg.innerHTML = '<div class="err">文件不是有效备份（JSON 解析失败）。</div>'; return; }
+
+  const list = Array.isArray(data) ? data : (data && data.batches);
+  if (!Array.isArray(list)){ msg.innerHTML = '<div class="err">文件里没有批次数据。</div>'; return; }
+
+  const clean = list.filter(b => b && Array.isArray(b.items) && !isLegacy(b.raw));
+  const hasPick = !!(data && !Array.isArray(data) && data.pick && Array.isArray(data.pick.sel));
+  if (!clean.length && !hasPick){ msg.innerHTML = '<div class="err">备份里没有可用批次。</div>'; return; }
+
+  const inJin = clean.reduce((s, b) => s + (b.total || 0), 0);
+  let replaced = false;
+  if (HISTORY.length){
+    replaced = confirm(
+      `备份：${clean.length} 批 / 号码 ${inJin} 斤\n现有：${HISTORY.length} 批 / 号码 ${totalJin()} 斤\n\n` +
+      `【确定】覆盖现有记录\n【取消】并入现有记录（重复的批次会跳过）`
+    );
+  }
+
+  if (replaced){
+    HISTORY = clean;
+  } else {
+    const seen = new Set(HISTORY.map(b => b.raw + '|' + b.total));
+    clean.forEach(b => {
+      const k = b.raw + '|' + b.total;
+      if (!seen.has(k)){ seen.add(k); HISTORY.push(b); }
+    });
+  }
+  if (data && !Array.isArray(data) && isFinite(+data.rate) && +data.rate > 0){
+    RATE = +data.rate;
+    try { LSX.setItem('liuhe_rate_v1', String(RATE)); } catch(err){}
+  }
+
+  /* 备份里带的手动修正：覆盖模式直接替换，并入模式按号累加 */
+  let adjNote = '';
+  if (data && !Array.isArray(data) && data.adjust && typeof data.adjust === 'object'){
+    const inAdj = {};
+    Object.keys(data.adjust).forEach(k => {
+      const no = parseInt(k, 10), v = +data.adjust[k];
+      if (no >= 1 && no <= 49 && isFinite(v) && v !== 0) inAdj[no] = v;
+    });
+    const cnt = Object.keys(inAdj).length;
+    if (cnt){
+      if (replaced){
+        ADJUST = inAdj;
+      } else {
+        Object.keys(inAdj).forEach(k => {
+          const no = +k;
+          const next = Math.round(((ADJUST[no] || 0) + inAdj[k]) * 100) / 100;
+          if (next === 0) delete ADJUST[no]; else ADJUST[no] = next;
+        });
+      }
+      saveAdjust();
+      adjNote = `，手动修正 ${cnt} 个号`;
+    }
+  }
+
+  /* 备份里带的平特修正 */
+  if (data && !Array.isArray(data) && data.ptAdjust && typeof data.ptAdjust === 'object'){
+    const inPt = {};
+    Object.keys(data.ptAdjust).forEach(k => {
+      const z = parseZodiacInput(k), v = +data.ptAdjust[k];
+      if (z && isFinite(v) && v !== 0) inPt[z] = v;
+    });
+    const cntPt = Object.keys(inPt).length;
+    if (cntPt){
+      if (replaced){
+        PT_ADJUST = inPt;
+      } else {
+        Object.keys(inPt).forEach(k => {
+          const next = Math.round(((PT_ADJUST[k] || 0) + inPt[k]) * 100) / 100;
+          if (next === 0) delete PT_ADJUST[k]; else PT_ADJUST[k] = next;
+        });
+      }
+      savePtAdjust();
+      adjNote += `，平特修正 ${cntPt} 个肖`;
+    }
+  }
+
+  /* 备份里带了挑码条件就一并恢复（内存 + 本地 + 界面） */
+  let pickNote = '';
+  if (hasPick){
+    try {
+      const sel = data.pick.sel.filter(k => COND[k]);
+      const snap = { sel: sel, kill: !!data.pick.kill, and: !!data.pick.and };
+      LSX.setItem('liuhe_pick_v1', JSON.stringify(snap));
+      PK_SEL = new Set(sel);
+      PK_KILL = !!data.pick.kill;
+      PK_AND = !!data.pick.and;
+      if (typeof pkRender === 'function') pkRender();
+      pickNote = `，挑码条件已恢复 ${sel.length} 项`;
+    } catch(err){}
+  }
+
+  persistHistory();
+  renderHistory();
+  recompute();
+  msg.innerHTML = `<div class="ok">已${replaced ? '覆盖为' : '导入'}：当前 ${HISTORY.length} 批 / 号码 ${totalJin()} 斤${totalPt() ? ` ＋平特 ${totalPt()} 斤` : ''}${pickNote}${adjNote}</div>`;
+});
+
+/* ================= 挑码助手 =================
+   数据全部来自本地 COND（149 个条件 → 号码集合），不请求任何外部站点。
+   口径与线上挑码助手一致：
+     · 同一个类型的条件取并集（多选就是「或」）
+     · 不同类型之间取交集（同时满足）
+     · 单双 / 大小 组内单选（点一个换一个）
+   杀码 = 从 1–49 里把挑出来的号剔掉。
+   本地额外给的：填回输入框、存 txt、记事本累计、同组取交集开关。
+*/
+const PK_GROUPS = [
+  { n: '单双',       radio: true, o: ['单','双'] },
+  { n: '大小',       radio: true, o: ['大','小'] },
+  { n: '合单双',     o: ['合单','大单','小单','合双','大双','小双'] },
+  { n: '合大尾大',   o: ['合大','尾大','合小','尾小'] },
+  { n: '五行',       o: ['金','木','水','火','土'] },
+  { n: '波色',       o: ['红波','蓝波','绿波'] },
+  { n: '家禽野兽',   o: ['家禽','野兽'] },
+  { n: '波色单双',   o: ['红单','红双','蓝单','蓝双','绿单','绿双'] },
+  { n: '生肖',       o: ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'] },
+  { n: '肖类',       o: ['天肖','地肖','左肖','右肖','前肖','后肖','独字肖','合字肖','阴肖','阳肖'] },
+  { n: '尾数',       o: ['0尾','1尾','2尾','3尾','4尾','5尾','6尾','7尾','8尾','9尾','大尾','小尾'] },
+  { n: '头数',       o: ['0头','1头','2头','3头','4头'] },
+  { n: '门',         o: ['1门','2门','3门','4门','5门'] },
+  { n: '段',         o: ['1段','2段','3段','4段','5段','6段','7段'] },
+  { n: '合数',       o: ['1合','2合','3合','4合','5合','6合','7合','8合','9合','10合','11合','12合','13合'] },
+  { n: '合尾',       o: ['0合尾','1合尾','2合尾','3合尾','4合尾','5合尾','6合尾','7合尾','8合尾','9合尾'] },
+  { n: '头单双',     o: ['0头单','1头单','2头单','3头单','4头单','0头双','1头双','2头双','3头双','4头双'] },
+  { n: '3 余',       o: ['3余0','3余1','3余2'] },
+  { n: '4 余',       o: ['4余0','4余1','4余2','4余3'] },
+  { n: '5 余',       o: ['5余0','5余1','5余2','5余3','5余4'] },
+  { n: '6 余',       o: ['6余0','6余1','6余2','6余3','6余4','6余5'] },
+  { n: '7 余',       o: ['7余0','7余1','7余2','7余3','7余4','7余5','7余6'] },
+  { n: '位置码',     o: ['楼上码','楼下码','前落码','后落码','左边码','右边码','内围码','外围码','中数','边数'] },
+];
+
+const PK_LS = 'liuhe_pick_v1';
+const PK_NOTE_LS = 'liuhe_pick_note_v1';
+let PK_SEL = new Set();
+let PK_KILL = false;
+let PK_AND = false;
+let PK_NOTE = [];
+
+(function pkLoad(){
+  let s = null;
+  try { s = JSON.parse(LSX.getItem(PK_LS) || 'null'); } catch(e){}
+  if (s){
+    if (Array.isArray(s.sel)) PK_SEL = new Set(s.sel.filter(k => COND[k]));
+    PK_KILL = !!s.kill;
+    PK_AND = !!s.and;
+  }
+  try {
+    const a = JSON.parse(LSX.getItem(PK_NOTE_LS) || '[]');
+    if (Array.isArray(a)) PK_NOTE = a.filter(x => x && Array.isArray(x.codes) && x.codes.length).slice(0, 60);
+  } catch(e){ PK_NOTE = []; }
+})();
+
+function pkPersist(){
+  try {
+    LSX.setItem(PK_LS, JSON.stringify({sel: [...PK_SEL], kill: PK_KILL, and: PK_AND}));
+  } catch(e){}
+}
+
+const ALL49 = Array.from({length: 49}, (_, i) => i + 1);
+
+function pkGroupOf(k){
+  for (const g of PK_GROUPS) if (g.o.includes(k)) return g;
+  return null;
+}
+
+function pkNums(){
+  const groups = PK_GROUPS
+    .map(g => g.o.filter(o => PK_SEL.has(o)))
+    .filter(arr => arr.length);
+
+  let pool = null;
+  if (!groups.length){
+    pool = new Set(ALL49);
+  } else if (PK_AND){
+    // 同组也要同时成立：组内逐个条件交，再跨组交
+    pool = new Set(ALL49);
+    for (const opts of groups){
+      for (const o of opts){
+        const s = new Set(COND[o] || []);
+        pool = new Set([...pool].filter(n => s.has(n)));
+      }
+    }
+  } else {
+    // 组内并集，跨组交集（与线上同一口径）
+    for (const opts of groups){
+      const u = new Set();
+      opts.forEach(o => (COND[o] || []).forEach(n => u.add(n)));
+      pool = pool ? new Set([...pool].filter(n => u.has(n))) : u;
+    }
+  }
+
+  let out = [...pool];
+  if (PK_KILL) out = ALL49.filter(n => !pool.has(n));
+  return out.sort((a, b) => a - b);
+}
+
+const pad2 = n => String(n).padStart(2, '0');
+
+function pkCodes(){
+  return pkNums().map(pad2).join('.');
+}
+
+/* 号码按波色上色，跟线上结果一样一眼分红蓝绿 */
+function pkColored(nums){
+  return nums.map(n => {
+    const w = INFO[n] ? INFO[n].wave : '';
+    const c = w === '红波' ? 'r' : w === '蓝波' ? 'b' : 'g';
+    return `<b class="pk-n ${c}" title="${pad2(n)} ${INFO[n] ? INFO[n].zodiac : ''} ${w}">${pad2(n)}</b>`;
+  }).join(' ');
+}
+
+function pkRenderChips(){
+  const box = $('#pkGroups');
+  if (!box) return;
+  box.innerHTML = PK_GROUPS.map((g, gi) => `
+    <div class="pk-group">
+      <div class="pk-gname">${g.n}</div>
+      <div class="pk-opts">${g.o.map(o =>
+        `<button class="pk${PK_SEL.has(o) ? ' on' : ''}${PK_KILL ? ' kill' : ''}" data-k="${esc(o)}" data-g="${gi}">${esc(o)}</button>`
+      ).join('')}</div>
+    </div>`).join('');
+}
+
+function pkRender(){
+  const nums = pkNums();
+  const el = $('#pkCodes');
+  if (el){
+    el.innerHTML = nums.length ? pkColored(nums) : '<em>没有符合条件的号码</em>';
+  }
+  const cnt = $('#pkCnt');
+  if (cnt){
+    cnt.textContent = `${PK_KILL ? '杀后剩 ' : '命中 '}${nums.length} 个`;
+  }
+  const sel = $('#pkSel');
+  if (sel){
+    sel.innerHTML = PK_SEL.size
+      ? '已选 <b>' + [...PK_SEL].join(' ') + '</b>'
+      : '未选条件 = 全 49 个号';
+  }
+  const res = $('#pkRes');
+  if (res) res.classList.toggle('killing', PK_KILL);
+  pkNoteRender();
+}
+
+function pkSync(){
+  pkPersist();
+  pkRenderChips();
+  pkRender();
+}
+
+/* ---------- 记事本：每次结果存一条，离线也能回看 ---------- */
+function pkStamp(){
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function pkNoteSaveAll(){
+  try { LSX.setItem(PK_NOTE_LS, JSON.stringify(PK_NOTE.slice(0, 60))); } catch(e){}
+}
+
+function pkNoteRender(){
+  const box = $('#pkNoteList');
+  if (!box) return;
+  const sum = $('#pkNoteSum');
+  if (sum) sum.textContent = PK_NOTE.length ? `（${PK_NOTE.length} 条）` : '（空）';
+  if (!PK_NOTE.length){
+    box.innerHTML = '<div class="pk-note-empty">还没有记录。挑完号点「存到记事本」，结果会按时间存在本机，离线也看得到。</div>';
+    return;
+  }
+  box.innerHTML = PK_NOTE.map((it, i) => {
+    const codes = it.codes.map(pad2).join(' ');
+    const short = it.codes.length > 16
+      ? it.codes.slice(0, 16).map(pad2).join(' ') + ` …共 ${it.codes.length} 个`
+      : codes;
+    return `<div class="pk-note-i">
+      <span class="pk-note-t">${esc(it.t || '')}</span>
+      <span class="pk-note-c">${it.kill ? '杀码剩' : ''}${it.codes.length} 个</span>
+      <span class="pk-note-x" data-note-fill="${i}" title="${esc(codes)}">${esc(short)}</span>
+      <span class="pk-note-b">
+        <button type="button" data-note-copy="${i}">复制</button>
+        <button type="button" data-note-del="${i}">×</button>
+      </span>
+    </div>`;
+  }).join('');
+}
+
+function pkNoteAdd(){
+  const nums = pkNums();
+  if (!nums.length) return;
+  const t = pkStamp();
+  // 同一条（同条件同结果）连点不重复记
+  const sig = (PK_KILL ? 'k' : 'p') + nums.join(',');
+  if (PK_NOTE[0] && PK_NOTE[0].sig === sig){
+    pkFlashNote('这条刚存过，没重复记');
+    return;
+  }
+  PK_NOTE.unshift({t, kill: PK_KILL, codes: nums, sig, sel: [...PK_SEL]});
+  if (PK_NOTE.length > 60) PK_NOTE.length = 60;
+  pkNoteSaveAll();
+  pkNoteRender();
+  pkFlashNote(`✓ 已存第 ${PK_NOTE.length} 条 · ${t}`);
+}
+
+function pkFlashNote(msg){
+  const el = $('#pkNoteMsg');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(pkFlashNote._t);
+  pkFlashNote._t = setTimeout(() => { el.classList.remove('on'); el.textContent = ''; }, 2600);
+}
+
+function pkNoteExport(){
+  if (!PK_NOTE.length) return;
+  const body = PK_NOTE.map(it =>
+    `${it.t}  ${it.kill ? '杀码剩' : '挑码'} ${it.codes.length} 个${it.sel && it.sel.length ? '\n条件：' + it.sel.join(' ') : ''}\n${it.codes.map(pad2).join(' ')}`
+  ).join('\n\n');
+  const blob = new Blob(['\ufeff' + '挑码记事本\n\n' + body + '\n'], {type: 'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '挑码记事本' + Date.now() + '.txt';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+async function pkCopyText(txt, btn){
+  try {
+    await navigator.clipboard.writeText(txt);
+  } catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch(e2){}
+    document.body.removeChild(ta);
+  }
+  if (btn){
+    const old = btn.textContent;
+    btn.textContent = '已复制';
+    setTimeout(() => { btn.textContent = old; }, 1200);
+  }
+}
+
+if ($('#pkGroups')){
+  $('#pkKill').checked = PK_KILL;
+  $('#pkAnd').checked = PK_AND;
+  pkSync();
+
+  $('#pkGroups').addEventListener('click', e => {
+    const btn = e.target.closest('.pk');
+    if (!btn) return;
+    const k = btn.dataset.k;
+    const g = PK_GROUPS[+btn.dataset.g];
+    if (PK_SEL.has(k)){
+      PK_SEL.delete(k);
+    } else {
+      if (g && g.radio) g.o.forEach(o => PK_SEL.delete(o));   // 单双 / 大小 组内单选
+      PK_SEL.add(k);
+    }
+    pkSync();
+  });
+
+  $('#pkKill').addEventListener('change', e => {
+    PK_KILL = e.target.checked;
+    pkSync();
+  });
+
+  $('#pkAnd').addEventListener('change', e => {
+    PK_AND = e.target.checked;
+    pkSync();
+  });
+
+  $('#pkClear').addEventListener('click', () => {
+    PK_SEL.clear();
+    pkSync();
+  });
+
+  $('#pkFill').addEventListener('click', () => {
+    const codes = pkCodes();
+    if (!codes) return;
+    const inp = $('#input');
+    inp.value = codes;
+    inp.focus();
+    inp.scrollIntoView({behavior: 'smooth', block: 'center'});
+  });
+
+  $('#pkCopy').addEventListener('click', () => {
+    const codes = pkCodes();
+    if (codes) pkCopyText(codes, $('#pkCopy'));
+  });
+
+  $('#pkNoteSave').addEventListener('click', pkNoteAdd);
+
+  $('#pkSave').addEventListener('click', () => {
+    const codes = pkCodes();
+    if (!codes) return;
+    const stamp = new Date().toLocaleString('zh-CN', {hour12: false});
+    const head = PK_KILL ? '杀码结果（剩 ' + pkNums().length + ' 个）' : '挑码结果（' + pkNums().length + ' 个）';
+    const body = head + '\r\n' + stamp + '\r\n\r\n' + codes.replace(/\./g, ' ');
+    const blob = new Blob(['\ufeff' + body], {type: 'text/plain;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '挑码' + Date.now() + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+
+  $('#pkNoteClear').addEventListener('click', () => {
+    if (!PK_NOTE.length) return;
+    if (!confirm('清空记事本里的 ' + PK_NOTE.length + ' 条记录？')) return;
+    PK_NOTE = [];
+    pkNoteSaveAll();
+    pkNoteRender();
+    pkFlashNote('记事本已清空');
+  });
+
+  $('#pkNoteExport').addEventListener('click', pkNoteExport);
+
+  $('#pkNoteList').addEventListener('click', e => {
+    const del = e.target.closest('[data-note-del]');
+    if (del){
+      PK_NOTE.splice(+del.dataset.noteDel, 1);
+      pkNoteSaveAll();
+      pkNoteRender();
+      return;
+    }
+    const cp = e.target.closest('[data-note-copy]');
+    if (cp){
+      const it = PK_NOTE[+cp.dataset.noteCopy];
+      if (it) pkCopyText(it.codes.map(pad2).join('.'), cp);
+      return;
+    }
+    const fl = e.target.closest('[data-note-fill]');
+    if (fl){
+      const it = PK_NOTE[+fl.dataset.noteFill];
+      if (!it) return;
+      PK_SEL = new Set((it.sel || []).filter(k => COND[k]));
+      PK_KILL = !!it.kill;
+      const kc = $('#pkKill');
+      if (kc) kc.checked = PK_KILL;
+      pkSync();
+    }
+  });
+}
+
+/* ============ 多开账本面板 ============ */
+(function wsPanelInit(){
+  const btn = document.getElementById('wsOpenBtn');
+  const panel = document.getElementById('wsPanel');
+  const badge = document.getElementById('wsBadge');
+  if (!btn || !panel || !badge) return;
+
+  const LIST_KEY = 'liuhe_wslist_v1';          // 全局键，故意不带账本前缀
+  const OK = /^[a-z0-9_-]{1,20}$/;
+
+  badge.textContent = WS ? ('账本 ' + WS) : '主账本';
+  btn.title = WS
+    ? `当前账本「${WS}」，数据和其他账本互不同步`
+    : '当前是主账本 · 点这里开一个独立账本';
+  if (WS) btn.classList.add('is-alt');
+
+  function seen(){
+    let a = [];
+    try { a = JSON.parse(RAW_LS.getItem(LIST_KEY) || '[]') || []; } catch(e){ a = []; }
+    if (!Array.isArray(a)) a = [];
+    a = a.map(x => String(x).toLowerCase()).filter(x => OK.test(x));
+    if (WS && !a.includes(WS)) a.push(WS);
+    return a;
+  }
+  function remember(name){
+    const a = seen();
+    if (!a.includes(name)) a.push(name);
+    try { RAW_LS.setItem(LIST_KEY, JSON.stringify(a)); } catch(e){}
+  }
+  if (WS) remember(WS);
+
+  const baseURL = () => location.origin + location.pathname;
+  const openWs = name => window.open(baseURL() + (name ? '?ws=' + encodeURIComponent(name) : ''), '_blank');
+
+  /* 服务器上实际存在的账本文件，也一起列出来（含别的设备建的） */
+  let srvNames = [];
+  async function pullLedgers(){
+    try {
+      const r = await fetch('/api/ledgers', { cache: 'no-store' });
+      if (!r.ok) return;
+      const j = await r.json();
+      srvNames = (j.ledgers || []).map(x => String(x.ws || '').toLowerCase()).filter(x => x && OK.test(x));
+    } catch(e){ /* 没起服务就只显示本机记录 */ }
+  }
+
+  function paintList(){
+    const box = document.getElementById('wsList');
+    if (!box) return;
+    const names = Array.from(new Set(seen().concat(srvNames)));
+    const items = [''].concat(names);
+    box.innerHTML = items.map(n => {
+      const on = n === WS ? ' on' : '';
+      const x = n
+        ? `<button type="button" class="ws-x" data-wsdel="${n}" title="关闭并删除账本 ${n} 的数据">×</button>`
+        : '';
+      return `<span class="ws-chip${on}"><button type="button" data-ws="${n}">${n || '主账本'}</button>${x}</span>`;
+    }).join('');
+  }
+
+  async function toggle(show){
+    const on = show === undefined ? panel.hasAttribute('hidden') : show;
+    if (on){
+      panel.removeAttribute('hidden');
+      paintList();
+      await pullLedgers();
+      if (!panel.hasAttribute('hidden')) paintList();
+    }
+    else panel.setAttribute('hidden', '');
+  }
+
+  btn.addEventListener('click', e => { e.stopPropagation(); toggle(); });
+  document.addEventListener('click', e => {
+    if (!panel.hasAttribute('hidden') && !panel.contains(e.target) && !btn.contains(e.target)) toggle(false);
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') toggle(false); });
+
+  const msg = document.getElementById('wsMsg');
+  const flash = txt => {
+    if (!msg) return;
+    msg.textContent = txt;
+    setTimeout(() => { if (msg.textContent === txt) msg.textContent = ''; }, 2000);
+  };
+
+  function go(){
+    const inp = document.getElementById('wsName');
+    let n = String(inp.value || '').trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    if (!n){ flash('用字母数字，比如 pan2'); inp.focus(); return; }
+    if (n === WS){ flash('这个已经开着'); return; }
+    remember(n);
+    inp.value = '';
+    openWs(n);
+    toggle(false);
+  }
+
+  document.getElementById('wsGoBtn').addEventListener('click', go);
+  document.getElementById('wsName').addEventListener('keydown', e => {
+    if (e.key === 'Enter'){ e.preventDefault(); go(); }
+  });
+
+  /* 关账本：点 × 两下才真删（第一下变红「删?」，3.5 秒不点自动复原） */
+  const armed = new Set();
+  function disarmAll(){
+    armed.clear();
+    document.querySelectorAll('.ws-x.arm').forEach(b => { b.classList.remove('arm'); b.textContent = '×'; });
+  }
+
+  async function delWs(name){
+    /* 1) 先广播 + 立墓碑：正开着这个账本的窗口立刻停止写入并退出，
+          不等服务器回话，断网也照发 */
+    wsMarkDeleted(name);
+
+    /* 2) 清本机该账本的 localStorage（前缀 liuhe@名字:） */
+    if (RAW_LS){
+      const pre = 'liuhe@' + name + ':';
+      const dead = [];
+      for (let i = 0; i < RAW_LS.length; i++){
+        const k = RAW_LS.key(i);
+        if (k && k.indexOf(pre) === 0) dead.push(k);
+      }
+      dead.forEach(k => { try { RAW_LS.removeItem(k); } catch(e){} });
+    }
+
+    srvNames = srvNames.filter(x => x !== name);
+    const rest = seen().filter(x => x !== name);
+    try { if (RAW_LS) RAW_LS.setItem(LIST_KEY, JSON.stringify(rest)); } catch(e){}
+    paintList();
+
+    /* 3) 再删服务器文件（离线时删不掉，本机已经清干净，先算关掉） */
+    let err = '';
+    let gone = false;
+    try {
+      const r = await fetch('/api/state?ws=' + encodeURIComponent(name), { method: 'DELETE' });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok) gone = true; else err = j.error || ('HTTP ' + r.status);
+    } catch(e){
+      err = '没连上服务器';
+    }
+
+    if (name === WS){ wsDie(); return; }   // 删的就是当前窗口 → 关窗或退回主账本
+
+    if (gone) flash('已关掉账本「' + name + '」· 那边的窗口已同步退出');
+    else if (err) flash('本机已关「' + name + '」· ' + err + '，data.' + name + '.json 还在，起服务后再点一次 × 删掉');
+    else flash('已关掉账本「' + name + '」· 那边的窗口已同步退出');
+  }
+
+  document.getElementById('wsList').addEventListener('click', e => {
+    const x = e.target.closest('[data-wsdel]');
+    if (x){
+      e.stopPropagation();
+      const n = x.dataset.wsdel;
+      if (!armed.has(n)){
+        disarmAll();
+        armed.add(n);
+        x.classList.add('arm');
+        x.textContent = '删?';
+        flash('再点一次 × 就删除账本「' + n + '」的全部数据');
+        setTimeout(() => {
+          if (armed.has(n)){
+            armed.delete(n);
+            if (x.isConnected){ x.classList.remove('arm'); x.textContent = '×'; }
+          }
+        }, 3500);
+        return;
+      }
+      armed.delete(n);
+      delWs(n);
+      return;
+    }
+
+    const b = e.target.closest('[data-ws]');
+    if (!b) return;
+    const n = b.dataset.ws;
+    if (n === WS){ toggle(false); return; }
+    openWs(n);
+    toggle(false);
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.ws-x')) disarmAll();
+  }, true);
+
+  document.getElementById('wsCopyBtn').addEventListener('click', async () => {
+    const url = baseURL() + wsQS;
+    try {
+      await navigator.clipboard.writeText(url);
+      flash('已复制');
+    } catch(e){
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); flash('已复制'); } catch(e2){ flash(url); }
+      document.body.removeChild(ta);
+    }
+  });
+})();
+
+/* 账本被别的窗口删掉后跳回主账本 —— 顶部说明一句，免得莫名其妙 */
+(function wsGoneNotice(){
+  let g = '';
+  try { g = new URLSearchParams(location.search).get('wsgone') || ''; } catch(e){}
+  if (!g) return;
+  const safe = g.replace(/[<>&"']/g, '');
+  const d = document.createElement('div');
+  d.className = 'ws-gone';
+  d.innerHTML = `账本「<b>${safe}</b>」已在另一个窗口被关掉，数据一起删了，当前显示主账本。`;
+  document.body.appendChild(d);
+  setTimeout(() => { try { d.remove(); } catch(e){} }, 6500);
+  try { history.replaceState(null, '', location.pathname); } catch(e){}
+})();
+
+/* 初始化 */
+renderHistory();
+recompute();
+</script>
+
+<script>
+/* 窄屏把大段输入规则折起来，腾出屏幕；桌面宽度完全不介入 */
+(function(){
+  function init(){
+    if (window.innerWidth > 740) return;
+    var hint = document.querySelector('.input-card .hint');
+    if (!hint || document.querySelector('.hint-toggle')) return;
+    hint.classList.add('collapsed');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'hint-toggle';
+    b.textContent = '展开输入规则';
+    b.addEventListener('click', function(){
+      var collapsed = hint.classList.toggle('collapsed');
+      b.textContent = collapsed ? '展开输入规则' : '收起输入规则';
+    });
+    hint.parentNode.insertBefore(b, hint.nextSibling);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+
+<script>
+/* 只在安全上下文注册，否则浏览器直接报错 */
+(function(){
+  var ok = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  if (!ok || !('serviceWorker' in navigator)) return;
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+})();
+</script>
+</body>
+</html>
