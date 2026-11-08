@@ -393,6 +393,28 @@
   .adj-in:focus{border-color:#2563eb}
   .adj-in.adj-d{width:5.6em}
   .adj-in.adj-n{width:11em;text-align:left;letter-spacing:.4px}
+  /* 号码框改成多行：一行一条「号码 + 增减」，跟主输入框一个用法 */
+  textarea.adj-in.adj-n{
+    width:26em;max-width:100%;height:32px;min-height:32px;line-height:1.55;
+    padding:6px 8px;resize:vertical;white-space:pre;overflow-y:auto;
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.3px;
+  }
+  textarea.adj-in.adj-n::placeholder{color:#a8b3c4;line-height:1.55}
+  /* 平特修正条的多行框：生肖串比号码长一点 */
+  textarea.adj-in.pt-n{width:23em}
+  /* 「减 / 加」二选一开关：点一下就换方向，不用自己在行里写正负号 */
+  .adj-dir{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#fff}
+  .adj-dir button{
+    font:inherit;font-size:12px;font-weight:600;line-height:1;padding:7px 12px;border:0;
+    background:transparent;color:#64748b;cursor:pointer;white-space:nowrap;
+  }
+  .adj-dir button + button{border-left:1px solid var(--line)}
+  .adj-dir button:hover{background:#f1f5f9}
+  .adj-dir button.on{color:#fff}
+  .adj-dir button[data-adjdir="-1"].on,
+  .adj-dir button[data-ptadjdir="-1"].on{background:#0f172a}
+  .adj-dir button[data-adjdir="1"].on,
+  .adj-dir button[data-ptadjdir="1"].on{background:#b91c1c}
   .adj-in.adj-z{width:3.6em;text-align:center;font-family:inherit;font-size:14px}
   .adj-in.adj-zs{width:8.5em;text-align:left;font-family:inherit;font-size:13px;letter-spacing:1px}
   .adj-bar #adjok, .adj-bar #ptadjok{
@@ -421,6 +443,45 @@
   }
   /* 打平线的算式小字 */
   .limit-expr{font-family:var(--mono);font-size:10.5px;color:#94a3b8;font-weight:400;letter-spacing:0}
+  /* 单号风险表：状态统计 + 复制 */
+  .rk-copy{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 8px;font-size:11.5px;color:#64748b}
+  .rk-copy .cnt{
+    font-family:var(--mono);font-size:11px;background:#f8fafc;border:1px solid var(--line);
+    border-radius:6px;padding:2px 8px;white-space:nowrap;
+  }
+  .rk-copy .cnt b{font-size:12.5px;margin:0 1px}
+  .rk-copy .cnt.d b{color:#b91c1c}
+  .rk-copy .cnt.w b{color:#b45309}
+  .rk-copy .cnt.s b{color:#15803d}
+  .rk-copy .sep{width:1px;height:14px;background:var(--line)}
+  .rk-copy .lb{color:#94a3b8}
+  .rk-copy .rk-fmtgroup{display:inline-flex;align-items:center;gap:6px}
+  /* 同值合并是独立开关，没开时用虚线边框，跟单选格式区分开 */
+  .rk-copy .rk-merge:not(.on){border-style:dashed;border-color:#cbd5e1;color:#64748b}
+  .rk-copy button{
+    font:inherit;font-size:11.5px;line-height:1.5;padding:3px 9px;border-radius:6px;
+    border:1px solid #e6ebf2;background:#f7f9fc;color:#7c8798;cursor:pointer;white-space:nowrap;
+  }
+  .rk-copy button:hover{background:#eef2f7;border-color:#cbd5e1;color:#334155}
+  /* 选中态：深底白字 + 打勾，一眼就能看出只选中了一个 */
+  .rk-copy button.on{background:#0f172a;border-color:#0f172a;color:#fff;font-weight:600;box-shadow:0 1px 2px rgba(15,23,42,.22)}
+  .rk-copy button.on::before{content:'✓ ';font-weight:700}
+  .rk-copy button:not(.on){box-shadow:none}
+  .rk-copy .msg{font-size:11px;color:#15803d;min-width:96px}
+  .rk-copy .msg.bad{color:#b91c1c}
+  /* 自动复制失败时的兜底框 */
+  .copy-fb{
+    position:fixed;left:50%;top:14%;transform:translateX(-50%);z-index:200;
+    width:min(560px,92vw);display:flex;flex-direction:column;gap:7px;
+    background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+    box-shadow:0 18px 50px rgba(15,23,42,.2);
+  }
+  .copy-fb b{font-size:13px;color:#b45309}
+  .copy-fb small{font-size:11.5px;color:#64748b;line-height:1.5}
+  .copy-fb textarea{
+    width:100%;height:150px;font-family:var(--mono);font-size:12px;line-height:1.6;
+    border:1px solid var(--line);border-radius:8px;padding:8px;resize:vertical;background:#f8fafc;
+  }
   /* 单个号斤数 ×47 的赔付额 */
   .x47{display:block;font-size:10.5px;color:#94a3b8;font-weight:400;margin-top:1px;letter-spacing:0}
   /* 平特斤数的批次来源（只显示，不点） */
@@ -562,6 +623,19 @@ textarea,input,select{font-size:16px !important}
   .row .k{flex:0 0 58px;font-size:12px}
   .row .v{flex:0 0 80px;font-size:11px}
   .chart-grid{grid-template-columns:1fr !important}
+  /* 修正条（号码 / 平特）：多行框在手机上独占一行、占满宽度，
+     否则 26em × 16px 会把布局视口撑到 468，整页被挤 */
+  .adj-bar{gap:6px 8px;padding:8px 10px}
+  .adj-bar .lb{flex:0 0 auto}
+  .adj-bar label{flex:1 1 100%;min-width:0;white-space:nowrap;flex-wrap:nowrap}
+  /* 「手动」那种单行输入框不占整行，跟方向按钮排一起 */
+  .adj-bar label:has(input){flex:0 1 auto}
+  .adj-bar label textarea.adj-in{flex:1 1 0;width:0 !important;min-width:0;max-width:100%;height:auto;min-height:32px}
+  .adj-bar label input.adj-in{flex:0 0 auto;width:5.6em !important}
+  .adj-bar .adj-prev,
+  .adj-bar .adj-list{flex:1 1 100%;font-size:11.5px;line-height:1.5;white-space:normal}
+  .adj-bar #adjok,
+  .adj-bar #ptadjok{flex:0 0 auto;padding:8px 16px}
 }
 </style>
 
@@ -617,7 +691,8 @@ textarea,input,select{font-size:16px !important}
           <b>分隔符随便</b>：点 <code>.</code>、逗号、空格、顿号、竖线、换行、直接连写都认，
           像 <code>01 02 08 11 13 16 43各70</code> 这种没有点的直接贴就行。<br>
           <b>多行 = 多批</b>，自动合并累加，同一个号跨批叠加斤数。<br>
-          整批同斤数：行尾写 <code>各5</code> / <code>各数5</code> / <code>每个5</code>；
+          整批同斤数：行尾写 <code>各5</code> / <code>各数5</code> / <code>每个5</code> / <code>落5</code>，
+          或者直接跟一个 50 以上的数（<code>1 5 10 50</code>）也是每个 50；
           <b>中文数字也认</b>：<code>狗猴马羊猪蛇各数五</code> = 这 6 肖每号 5 斤，
           <code>各数十五</code>、<code>各二十五</code>、<code>各一百</code> 都行；
           单号不同斤数：<code>28x8</code>、<code>40x3</code>；不写默认 1 斤。<br>
@@ -904,8 +979,8 @@ function normalizeInput(text){
     .replace(/[\uFF0C\u3001]/g, ' ')      // ，、
     .replace(/[\uFF58\uFF38\u00D7\u2715]/g, 'x') // ｘＸ×
     .replace(/[\u3000\t\u00A0]/g, ' ')    // 全角空格 / TAB
-    // 各数五 / 各十五 / 每个一百 → 各数5 / 各15 / 每个100（中文数字放在「各/每」后面才换算）
-    .replace(/([各每]\s*[数數个個号號码碼]?\s*)([零〇一二两兩三四五六七八九十百壹贰貳叁參肆伍陆陸柒捌玖拾佰]+)(?=\s*斤?)/g,
+    // 各数五 / 各十五 / 每个一百 → 各数5 / 各15 / 每个100（中文数字放在「各/每/要/落」后面才换算）
+    .replace(/([各每要落]\s*[数數个個号號码碼]?\s*)([零〇一二两兩三四五六七八九十百壹贰貳叁參肆伍陆陸柒捌玖拾佰]+)(?=\s*斤?)/g,
       (all, head, cn) => {
         const v = cnToNum(cn);
         return (isFinite(v) && v > 0) ? head + v : all;
@@ -947,7 +1022,7 @@ function extractPingte(text){
       const tm = text.slice(j).match(/^(\d)\s*尾|^尾\s*(\d)/);
       if (tm){ pend.push('尾' + (tm[1] || tm[2])); j += tm[0].length; continue; }
       if (isZ(c)){ pend.push(c); j++; continue; }
-      if (c === '各' || c === '每'){ group = true; j++; continue; }
+      if (c === '各' || c === '每' || c === '落' || c === '要'){ group = true; j++; continue; }
       // 「各数N / 每个N / 各号N」里的量词，跳过，别当成不认识的字符中断
       if (c === '数' || c === '數' || c === '个' || c === '個' || c === '号' || c === '號' || c === '码' || c === '碼'){ j++; continue; }
       if (c >= '0' && c <= '9'){
@@ -986,8 +1061,8 @@ function parseInput(text){
   const t = rest;
   const items = [], bad = [];
 
-  // 找出所有 各N / 各数N / 各号N / 每个N 标记
-  const markRe = /[各每]\s*[数個个号碼码]?\s*(\d+)\s*斤?/g;
+  // 找出所有 各N / 各数N / 每个N / 落N / 要N 标记（落、要和「各」一个意思：每个）
+  const markRe = /[各每要落]\s*[数個个号碼码]?\s*(\d+)\s*斤?/g;
   const marks = [];
   let mm;
   while ((mm = markRe.exec(t)) !== null){
@@ -1007,18 +1082,25 @@ function parseInput(text){
 
   let globalMult = 1;
   for (const sg of segs){
-    if (sg.mult !== 1) globalMult = sg.mult;
+    let segText = sg.text, segMult = sg.mult;
+    /* 号码后面直接跟一个 ≥50 的裸数字（1 5 10 50）：50 不可能是号码，当整批斤数 */
+    const bare = segText.match(/(?:^|[\s.、])(\d+)\s*$/);
+    if (bare && Number(bare[1]) >= 50){
+      segMult = Number(bare[1]);
+      segText = segText.slice(0, bare.index).trim();
+    }
+    if (segMult !== 1) globalMult = segMult;
     // 分支1：条件名（生肖 / 波色 / 合单 / 红单 / 1门 / 0头单 / 内围码 …），可跟斤数
     // 分支2：号码，可跟斤数（28x5 / 41/60）
     COND_RE.lastIndex = 0;
     let m;
-    while ((m = COND_RE.exec(sg.text)) !== null){
+    while ((m = COND_RE.exec(segText)) !== null){
       if (m[1]){
-        const mult = m[2] ? (parseInt(m[2], 10) || 1) : sg.mult;
+        const mult = m[2] ? (parseInt(m[2], 10) || 1) : segMult;
         (COND[m[1]] || []).forEach(n => items.push({no:n, mult}));
       } else {
         const n = parseInt(m[3], 10);
-        const mult = m[4] ? (parseInt(m[4], 10) || 1) : sg.mult;
+        const mult = m[4] ? (parseInt(m[4], 10) || 1) : segMult;
         if (n >= 1 && n <= 49) items.push({no:n, mult});
         else bad.push(m[3]);
       }
@@ -1055,8 +1137,25 @@ function saveAdjust(){
   try { LSX.setItem('liuhe_adjust_v1', JSON.stringify(ADJUST)); } catch(e){}
 }
 
-/* 修正条输入框的值（重渲染后保留，方便连改几个号） */
-let ADJ_IN = {no: '', d: '', msg: ''};
+/* 修正条输入框的值（重渲染后保留，方便连改几个号）
+   dir：-1 = 减、1 = 加 —— 旁边两个按钮点选，不用在行里写正负号 */
+let ADJ_IN = {no: '', d: '', dir: -1, msg: ''};
+try {
+  if (LSX.getItem('liuhe_adjdir_v1') === '1') ADJ_IN.dir = 1;
+} catch(e){}
+
+/* 切换「减 / 加」 */
+function setAdjDir(dir){
+  ADJ_IN.dir = dir === 1 ? 1 : -1;
+  try { LSX.setItem('liuhe_adjdir_v1', String(ADJ_IN.dir)); } catch(e){}
+  const bar = document.getElementById('adjdir');
+  if (bar) [...bar.querySelectorAll('[data-adjdir]')].forEach(b => {
+    b.classList.toggle('on', Number(b.dataset.adjdir) === ADJ_IN.dir);
+  });
+}
+
+/* 清空输入框但保住方向 */
+function resetAdjIn(){ ADJ_IN = {no: '', d: '', dir: ADJ_IN.dir, msg: ''}; }
 
 /* 解析批量号码：1 5 10 / 1,5,10 / 1-49 / 全部 —— 去重、按 1–49 过滤、升序 */
 function parseNoList(s){
@@ -1079,8 +1178,214 @@ function parseNoList(s){
   return out.sort((x, y) => x - y);
 }
 
-/* 把调整叠到合并结果；改完 ≤ 0 的号直接从盘面移除 */
-function applyAdjust(items){
+/* ===== 多行修正解析 =====
+   一行一条，号码和斤数写在一起，方向由旁边的「减 / 加」按钮决定：
+     21各40              21 号 40 斤
+     09各30              09 → 9 号
+     31.33.43.44各20     多个号同一个量
+     1 5 10 各40         空格随便加
+     各数四十            中文数字也认
+     1 5 10 -95          写死符号也行，符号优先于按钮
+     2-10 +20            范围
+     12 24 36            不写量 → 用 fallback（老兼容）
+   dir：1 = 加，-1 = 减。返回 {rows, bad, nos, fallbackUsed} */
+function parseAdjLines(text, fallback, dir){
+  const res = {rows: [], bad: [], nos: [], fallbackUsed: false, fbCount: 0};
+  const sgn = (dir === -1) ? -1 : 1;
+  const fbTxt = String(fallback == null ? '' : fallback).trim();
+  const fbNum = (fbTxt !== '' && isFinite(Number(fbTxt))) ? Number(fbTxt) : null;
+  /* 旁边「手动斤数」框：填正数（95）→ 按「减 / 加」按钮算；填负数（-95）→ 直接减，按钮不改它 */
+  const fb = fbNum === null ? null
+    : Math.round((fbNum < 0 ? fbNum : (dir === -1 ? -fbNum : fbNum)) * 100) / 100;
+  const r2 = v => Math.round(v * 100) / 100;
+  const pushUniq = (arr, n) => { if (arr.indexOf(n) < 0) arr.push(n); };
+
+  String(text == null ? '' : text).split(/\r?\n/).forEach((rawLine, idx) => {
+    let line = rawLine.replace(/#.*$/, '').trim();
+    if (!line) return;
+    /* 归一化：全角数字、全角加减、逗号顿号、中文「加 / 减」 */
+    line = line
+      .replace(/[\uFF10-\uFF19]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+      .replace(/[＋]/g, '+')
+      .replace(/[－—–−]/g, '-')
+      .replace(/[，、,]/g, ' ')
+      .replace(/[：:]/g, ' ')
+      .replace(/．/g, '.')
+      .replace(/(?:各|每)?\s*加\s*/g, ' +')
+      .replace(/(?:各|每)?\s*减\s*/g, ' -')
+      .replace(/\u3000|\t|\u00A0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    /* 中文数字：各四十 → 各40（只换「各 / 每 / 落 / 要」后面那一段） */
+    line = line.replace(/((?:各数|各号|各个|每个|每号|各|每|落|要)\s*[+-]?\s*)([零〇一二两兩三四五六七八九十百壹贰貳叁參肆伍陆陸柒捌玖拾佰]+)(?=\s*斤?$)/g,
+      (all, head, cn) => {
+        const v = cnToNum(cn);
+        return (isFinite(v) && v > 0) ? head + v : all;
+      });
+
+    let d = null, body = line, m;
+
+    /* ① 「号码各斤数」：21各40 / 31.33.43.44各20 / 各数40 / 落50 */
+    m = line.match(/(?:各数|各号|各个|每个|每号|落|要|各|每)\s*([+-])?\s*(\d+(?:\.\d+)?)\s*斤?\s*$/);
+    if (m){
+      const v = parseFloat(m[2]);
+      if (isFinite(v) && v > 0){
+        d = r2((m[1] === '-' ? -1 : (m[1] === '+' ? 1 : sgn)) * v);
+        body = line.slice(0, m.index).trim();
+      }
+    }
+    /* ② 行尾带符号：1 5 10 -95（符号前必须是空格或行首，别把 1-49 拆了） */
+    if (d === null){
+      m = line.match(/(?:^|\s)([+-])\s*(\d+(?:\.\d+)?)\s*斤?$/);
+      if (m){
+        const v = parseFloat(m[2]);
+        if (isFinite(v) && v > 0){
+          d = r2((m[1] === '-' ? -1 : 1) * v);
+          body = line.slice(0, m.index).trim();
+        }
+      }
+    }
+    /* ③ 行尾裸数字 ≥ 50（号码最大 49）→ 当斤数，方向看按钮 */
+    if (d === null){
+      m = line.match(/(?:^|\s)(\d+(?:\.\d+)?)\s*斤?$/);
+      if (m){
+        const v = parseFloat(m[1]);
+        if (isFinite(v) && v >= 50){ d = r2(sgn * v); body = line.slice(0, m.index).trim(); }
+      }
+    }
+    /* 一行里塞了两条（21各40 09各30）→ 直接报错，别猜 */
+    if (/(?:各|每|落)/.test(body)){
+      res.bad.push(`第 ${idx + 1} 行只写一条：${rawLine.trim()}`);
+      return;
+    }
+
+    const nos = parseNoList(body);
+    if (d === null && fb !== null){ d = fb; res.fallbackUsed = true; res.fbCount++; }
+    if (!nos.length){ res.bad.push(`第 ${idx + 1} 行没认出号码：${rawLine.trim()}`); return; }
+    if (d === null){ res.bad.push(`第 ${idx + 1} 行没写斤数：写成「21各40」`); return; }
+    if (!isFinite(d) || d === 0){ res.bad.push(`第 ${idx + 1} 行斤数是 0 或不是数字`); return; }
+    nos.forEach(n => pushUniq(res.nos, n));
+    res.rows.push({nos, d, line: rawLine.trim()});
+  });
+  return res;
+}
+
+/* 每号累计增减量：{号: 总增减} */
+function adjDeltaMap(parsed){
+  const map = {};
+  parsed.rows.forEach(row => row.nos.forEach(no => {
+    map[no] = Math.round(((map[no] || 0) + row.d) * 100) / 100;
+  }));
+  return map;
+}
+
+/* ===== 平特多行修正解析（跟号码修正条一个用法）=====
+     狗各40              狗 40 斤
+     猴.马各20           猴、马各 20
+     狗猴马各20          连写也认
+     8尾各100            尾数
+     狗加50 / 狗减50      中文加减
+     狗 -50              写死符号，符号优先于按钮
+     狗 50               裸数字，方向看「减 / 加」按钮
+     狗                  不写斤数 → 用旁边「手动」框
+   dir：1 = 加，-1 = 减 */
+function parsePtAdjLines(text, fallback, dir){
+  const res = {rows: [], bad: [], zs: [], fallbackUsed: false, fbCount: 0};
+  const sgn = (dir === -1) ? -1 : 1;
+  const r2 = v => Math.round(v * 100) / 100;
+  const fbTxt = String(fallback == null ? '' : fallback).trim();
+  const fbNum = (fbTxt !== '' && isFinite(Number(fbTxt))) ? Number(fbTxt) : null;
+  const fb = fbNum === null ? null : r2(fbNum < 0 ? fbNum : (dir === -1 ? -fbNum : fbNum));
+
+  String(text == null ? '' : text).split(/\r?\n/).forEach((rawLine, idx) => {
+    let line = rawLine.replace(/#.*$/, '').trim();
+    if (!line) return;
+    line = line
+      .replace(/[\uFF10-\uFF19]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+      .replace(/[＋]/g, '+')
+      .replace(/[－—–−]/g, '-')
+      .replace(/[，、,]/g, ' ')
+      .replace(/[：:]/g, ' ')
+      .replace(/．/g, '.')
+      .replace(/(?:各|每)?\s*加\s*/g, ' +')
+      .replace(/(?:各|每)?\s*减\s*/g, ' -')
+      .replace(/\u3000|\t|\u00A0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    /* 中文数字：狗各四十 → 狗各40 */
+    line = line.replace(/((?:各数|各号|各个|每个|每号|各|每|落|要)\s*[+-]?\s*)([零〇一二两兩三四五六七八九十百壹贰貳叁參肆伍陆陸柒捌玖拾佰]+)(?=\s*斤?$)/g,
+      (all, head, cn) => {
+        const v = cnToNum(cn);
+        return (isFinite(v) && v > 0) ? head + v : all;
+      });
+
+    let d = null, body = line, m;
+
+    /* ① 生肖各斤数：狗各40 / 猴.马各20 / 8尾各100 */
+    m = line.match(/(?:各数|各号|各个|每个|每号|落|要|各|每)\s*([+-])?\s*(\d+(?:\.\d+)?)\s*斤?\s*$/);
+    if (m){
+      const v = parseFloat(m[2]);
+      if (isFinite(v) && v > 0){
+        d = r2((m[1] === '-' ? -1 : (m[1] === '+' ? 1 : sgn)) * v);
+        body = line.slice(0, m.index).trim();
+      }
+    }
+    /* ② 行尾带符号：狗 -50 / 狗-50 / 平马+100 —— 符号最优先，盖过方向按钮 */
+    if (d === null){
+      m = line.match(/([+-])\s*(\d+(?:\.\d+)?)\s*斤?$/);
+      if (m){
+        const v = parseFloat(m[2]);
+        if (isFinite(v) && v > 0){
+          d = r2((m[1] === '-' ? -1 : 1) * v);
+          body = line.slice(0, m.index).replace(/[平特\s]+/g, ' ').trim();
+        }
+      }
+    }
+    /* ③ 行尾裸数字：狗 50 / 狗50 / 平马100 / 8尾100
+       数字紧贴生肖也认（老板习惯直接打「马100」）
+       前面的「平 / 平特」当装饰剥掉，不当生肖
+       紧贴时要求前一个字是生肖或尾数，免得把「尾8」里的 8 当成斤数 */
+    if (d === null){
+      m = line.match(/(\d+(?:\.\d+)?)\s*斤?$/);
+      if (m){
+        const v = parseFloat(m[1]);
+        const head = line.slice(0, m.index).replace(/[平特\s]+/g, ' ').trim();
+        const tight = m.index > 0 && !/\s/.test(line.charAt(m.index - 1));
+        const tailCh = head.slice(-1);
+        const tightOk = !tight || ZODIAC.indexOf(tailCh) >= 0 || !!ZODIAC_ALIAS[tailCh] || tailCh === '尾';
+        if (isFinite(v) && v > 0 && head && tightOk && parseZodiacList(head).length){
+          d = r2(sgn * v);
+          body = head;
+        }
+      }
+    }
+    /* 一行里塞了两条 → 直接报错，别猜 */
+    if (/(?:各|每|落|要)/.test(body)){
+      res.bad.push(`第 ${idx + 1} 行只写一条：${rawLine.trim()}`);
+      return;
+    }
+
+    const zs = parseZodiacList(body);
+    if (!zs.length){ res.bad.push(`第 ${idx + 1} 行没认出平特：${rawLine.trim()}`); return; }
+    if (d === null && fb !== null){ d = fb; res.fallbackUsed = true; res.fbCount++; }
+    if (d === null){ res.bad.push(`第 ${idx + 1} 行没写斤数：写成「马各100」「马100」，或在右边手动框填斤数`); return; }
+    if (!isFinite(d) || d === 0){ res.bad.push(`第 ${idx + 1} 行斤数是 0 或不是数字`); return; }
+    zs.forEach(z => { if (res.zs.indexOf(z) < 0) res.zs.push(z); });
+    res.rows.push({zs, d, line: rawLine.trim()});
+  });
+  return res;
+}
+
+/* 每个平特累计增减：{生肖: 总增减} */
+function ptDeltaMap(parsed){
+  const map = {};
+  parsed.rows.forEach(row => row.zs.forEach(z => {
+    map[z] = Math.round(((map[z] || 0) + row.d) * 100) / 100;
+  }));
+  return map;
+}
+
+/* 把调整叠到合并结果；改完 ≤ 0 的号直接从盘面移除 */function applyAdjust(items){
   const keys = Object.keys(ADJUST);
   if (!keys.length) return items;
   const map = new Map(items.map(it => [it.no, it.mult]));
@@ -1112,8 +1417,22 @@ function savePtAdjust(){
   try { LSX.setItem('liuhe_ptadjust_v1', JSON.stringify(PT_ADJUST)); } catch(e){}
 }
 
-/* 修正条输入框的值（重渲染后保留） */
-let PTADJ_IN = {z: '', d: '', msg: ''};
+/* 修正条输入框的值（重渲染后保留）
+   dir：-1 = 减、1 = 加 —— 跟号码修正条一个用法 */
+let PTADJ_IN = {z: '', d: '', dir: -1, msg: ''};
+try {
+  if (LSX.getItem('liuhe_ptadjdir_v1') === '1') PTADJ_IN.dir = 1;
+} catch(e){}
+
+/* 切换平特修正的「减 / 加」 */
+function setPtAdjDir(dir){
+  PTADJ_IN.dir = dir === 1 ? 1 : -1;
+  try { LSX.setItem('liuhe_ptadjdir_v1', String(PTADJ_IN.dir)); } catch(e){}
+  const bar = document.getElementById('ptadjdir');
+  if (bar) [...bar.querySelectorAll('[data-ptadjdir]')].forEach(b => {
+    b.classList.toggle('on', Number(b.dataset.ptadjdir) === PTADJ_IN.dir);
+  });
+}
 
 const ZODIAC_ALIAS = {'馬': '马', '龍': '龙', '雞': '鸡', '豬': '猪', '雞': '鸡', '兎': '兔', '羊': '羊'};
 
@@ -1562,38 +1881,185 @@ try {
   if (_p === '0') PT_IN_RISK = false;
 } catch(e){}
 
+/* 单号风险表复制格式：
+   RK_FMT  row = 整行（带表头，贴 Excel） / no = 号+超线（09各81，不带正负号）—— 这两个互斥单选
+   RK_MERGE 同值合并开关（独立，不随格式切换取消）：超线一样的号合成一行，如 09.42各70
+           合并只在「号+超线」下生效 */
+let RK_FMT = 'row';
+let RK_MERGE = false;
+try {
+  const _f = LSX.getItem('liuhe_rkfmt_v1');
+  if (_f === 'no') RK_FMT = 'no';
+  else if (_f === 'grp'){ RK_FMT = 'no'; RK_MERGE = true; }   /* 老版本存的是 grp，兼容成全开 */
+  if (LSX.getItem('liuhe_rkmerge_v1') === '1') RK_MERGE = true;
+} catch(e){}
+
+/* 复制到剪贴板：优先异步 API（最多等 800ms），不行退回 textarea + execCommand（file:// 也能用） */
+function copyText(t){
+  const fallback = () => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = t;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch(e){ return false; }
+  };
+  return new Promise(res => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        let done = false;
+        const to = setTimeout(() => { if (!done){ done = true; res(fallback()); } }, 800);
+        navigator.clipboard.writeText(t).then(
+          () => { if (!done){ done = true; clearTimeout(to); res(true); } },
+          () => { if (!done){ done = true; clearTimeout(to); res(fallback()); } }
+        );
+        return;
+      }
+    } catch(e){}
+    res(fallback());
+  });
+}
+
+/* 自动复制被浏览器拦住时：弹一个只读框，内容已选中，老板自己 Ctrl+C */
+function showCopyFallback(text){
+  let box = document.getElementById('copyfallback');
+  if (!box){
+    box = document.createElement('div');
+    box.id = 'copyfallback';
+    box.className = 'copy-fb';
+    const b = document.createElement('b');
+    b.textContent = '自动复制被浏览器拦住了';
+    const s = document.createElement('small');
+    s.textContent = '内容已经选中，按 Ctrl+C（手机长按）复制；点框外或 20 秒后自动关掉';
+    const ta = document.createElement('textarea');
+    ta.readOnly = true;
+    box.appendChild(b); box.appendChild(s); box.appendChild(ta);
+    document.body.appendChild(box);
+    box.addEventListener('click', e => { if (e.target === box) box.remove(); });
+  }
+  const ta = box.querySelector('textarea');
+  ta.value = text;
+  try { ta.focus(); ta.select(); } catch(e){}
+  if (showCopyFallback._t) clearTimeout(showCopyFallback._t);
+  showCopyFallback._t = setTimeout(() => { try { box.remove(); } catch(e){} }, 20000);
+}
+
+/* 复制单号风险表某一类：cat = d 超线 / w 临界 / s 安全 */
+function copyRiskRows(cat){
+  const msg = document.getElementById('rkcopymsg');
+  const name = {d: '超线', w: '临界', s: '安全'}[cat] || '';
+  const say = (txt, bad) => {
+    if (!msg) return;
+    msg.className = 'msg' + (bad ? ' bad' : '');
+    msg.textContent = txt;
+    if (copyRiskRows._t) clearTimeout(copyRiskRows._t);
+    copyRiskRows._t = setTimeout(() => { try { msg.textContent = ''; } catch(e){} }, 3000);
+  };
+  const trs = [...document.querySelectorAll('#out tr[data-rkcat="' + cat + '"]')];
+  if (!trs.length){ say(`没有${name}的号`, true); return; }
+  const noOf = tr => tr.children[0].textContent.trim();
+  const overOf = tr => Math.abs(Math.round(Number(tr.dataset.rkover) || 0));
+  let text, rowsOut = trs.length, merged = false;
+  if (RK_FMT === 'no'){
+    if (RK_MERGE){
+      /* 超线一样的号合成一行，按表格顺序（最危险的在前）：09.42各70 */
+      merged = true;
+      const groups = new Map();
+      trs.forEach(tr => {
+        const v = overOf(tr);
+        if (!groups.has(v)) groups.set(v, []);
+        groups.get(v).push(noOf(tr));
+      });
+      const lines = [...groups.entries()].map(([v, nos]) => `${nos.join('.')}各${v}`);
+      text = lines.join('\n');
+      rowsOut = lines.length;
+    } else {
+      text = trs.map(tr => `${noOf(tr)}各${overOf(tr)}`).join('\n');
+    }
+  } else {
+    const head = ['号', '生肖', '注额', '打平线', '超线', '该肖平特', '开出盈亏', '状态'].join('\t');
+    const lines = trs.map(tr => [...tr.children]
+      .map(td => td.textContent.replace(/\s+/g, ' ').trim())
+      .join('\t'));
+    text = head + '\n' + lines.join('\n');
+  }
+  copyText(text).then(ok => {
+    const tip = merged ? `（${trs.length} 个号）` : '';
+    if (ok){ say(`✓ 已复制${name} ${rowsOut} 行${tip}`); return; }
+    showCopyFallback(text);
+    say('自动复制被拦住，已弹出内容，按 Ctrl+C', true);
+  });
+}
+
 /* 「号码 － 平特」对比块已按老板要求移除（2026-10-21） */
 
-/* 号码修正（可批量）：实时预览「原值 → 新值」 */
+/* 号码修正（可批量、可多行）：实时预览「原值 → 新值」 */
 function adjPreview(){
   const el = document.getElementById('adjprev');
   if (!el || el.nodeType === undefined) return;
-  const ni = document.getElementById('adjno'), di = document.getElementById('adjdelta');
-  const list = parseNoList(ni ? ni.value : '');
-  const raw = di ? String(di.value).trim() : '';
-  const typed = ni ? String(ni.value).trim() : '';
+  const ni = document.getElementById('adjno');
+  const di = document.getElementById('adjdelta');
+  const typed = ni ? String(ni.value) : '';
+  const manual = di ? String(di.value).trim() : '';
+  const r = parseAdjLines(typed, manual, ADJ_IN.dir);
+  const dirTxt = ADJ_IN.dir === 1 ? '加' : '减';
+  const manualTxt = (manual === '' || !isFinite(Number(manual))) ? ''
+    : (Number(manual) < 0
+        ? `　·　没写斤数的行用 ${Number(manual)} 斤`
+        : `　·　没写斤数的行用「${dirTxt}」${Number(manual)} 斤`);
   el.className = 'adj-prev';
-  if (!list.length){
-    if (typed){ el.className = 'adj-prev bad'; el.textContent = '没认出号码：用空格/逗号分隔，或 1-49、全部'; }
-    else el.textContent = '填号码（可多个：1 5 10 / 1-49 / 全部）＋斤数';
+
+  /* 刚提交完、输入框还没动 → 优先显示回执，别被重新算的预览盖掉 */
+  if (ADJ_IN.msg && String(typed).trim() === ADJ_IN.no){
+    el.className = 'adj-prev ok';
+    el.innerHTML = `<b>${ADJ_IN.msg}</b>`;
     return;
   }
-  const cur = n => (CURRENT && CURRENT.bet) ? (CURRENT.bet.get(n) || 0) : 0;
-  const who = list.length === 1
-    ? `${list[0]} 号${INFO[list[0]] ? `（${INFO[list[0]].zodiac}）` : ''}`
-    : `${list.length} 个号`;
-  if (raw === '' || !isFinite(Number(raw))){
+
+  if (!r.rows.length){
+    if (r.bad.length){ el.className = 'adj-prev bad'; el.textContent = r.bad[0]; return; }
+    if (typed.trim()){ el.className = 'adj-prev bad'; el.textContent = '没认出号码：用空格/逗号分隔，或 1-49、全部'; return; }
     if (ADJ_IN.msg){ el.className = 'adj-prev ok'; el.innerHTML = `<b>${ADJ_IN.msg}</b>`; return; }
-    el.innerHTML = `${who} 当前合计 <b>${Math.round(list.reduce((s, n) => s + cur(n), 0) * 100) / 100}</b> 斤`;
+    el.textContent = `一行一条：21各40 / 31.33.43.44各20　·　现在选的是「${dirTxt}」${manualTxt}`;
     return;
   }
-  const d = Number(raw);
-  const tot = Math.round(list.reduce((s, n) => s + Math.max(0, cur(n) + d), 0) * 100) / 100;
-  const demo = list.length > 1
-    ? `　例 ${list[0]}号 ${cur(list[0])} → ${Math.max(0, Math.round((cur(list[0]) + d) * 100) / 100)}`
-    : '';
-  el.innerHTML = `${who} 每个 <b>${d > 0 ? '+' : ''}${d}</b> 斤 → 合计 <b>${tot}</b> 斤${demo}`;
-  if (list.every(n => cur(n) + d <= 0)) el.className = 'adj-prev bad';
+
+  const cur = n => (CURRENT && CURRENT.bet) ? (CURRENT.bet.get(n) || 0) : 0;
+  const dmap = adjDeltaMap(r);
+  const keys = Object.keys(dmap).map(Number).sort((a, b) => a - b);
+  const tot = Math.round(keys.reduce((s, n) => s + Math.max(0, cur(n) + dmap[n]), 0) * 100) / 100;
+  const ds = [...new Set(r.rows.map(x => x.d))];
+  const each = ds.length === 1 ? `${ds[0] > 0 ? '+' : ''}${ds[0]}` : null;
+
+  if (r.rows.length === 1 && each){
+    const d = ds[0];
+    const who = keys.length === 1
+      ? `${keys[0]} 号${INFO[keys[0]] ? `（${INFO[keys[0]].zodiac}）` : ''}`
+      : `${keys.length} 个号`;
+    const demo = keys.length > 1
+      ? `　例 ${keys[0]}号 ${cur(keys[0])} → ${Math.max(0, Math.round((cur(keys[0]) + d) * 100) / 100)}`
+      : '';
+    el.innerHTML = `${who} 每个 <b>${each}</b> 斤 → 合计 <b>${tot}</b> 斤${demo}`;
+    if (keys.every(n => cur(n) + d <= 0)) el.className = 'adj-prev bad';
+  } else {
+    el.innerHTML = `<b>${r.rows.length}</b> 行 · 共 <b>${keys.length}</b> 个号 · ${each ? `每行 ${each}` : '每行不同量'} → 合计 <b>${tot}</b> 斤`;
+  }
+  if (r.fallbackUsed){
+    const mv = Number(manual) < 0 ? Number(manual) : (ADJ_IN.dir === 1 ? Number(manual) : -Number(manual));
+    el.innerHTML += `<span style="opacity:.75">　·　${r.fbCount} 行没写斤数，用手动 ${mv} 斤</span>`;
+  }
+  if (r.bad.length){
+    el.className = 'adj-prev bad';
+    el.innerHTML += `　⚠ 另有 ${r.bad.length} 行没认出来，不会写入`;
+  }
 }
 
 function adjFlash(txt){
@@ -1603,31 +2069,58 @@ function adjFlash(txt){
   el.textContent = txt;
 }
 
+/* 多行号码框跟着内容长高（最多 8 行左右，再多就内部滚动）；平特框共用 */
+function fitAdjBox(id){
+  const el = document.getElementById(id || 'adjno');
+  if (!el || el.tagName !== 'TEXTAREA') return;
+  el.style.height = 'auto';
+  el.style.height = Math.min(150, Math.max(32, el.scrollHeight + 2)) + 'px';
+}
+
 /* 平特修正（可批量）：实时预览「原值 → 新值」 */
 function ptAdjPreview(){
   const el = document.getElementById('ptadjprev');
   if (!el) return;
   const zi = document.getElementById('ptadjz'), di = document.getElementById('ptadjdelta');
-  const list = parseZodiacList(zi ? zi.value : '');
-  const raw = di ? String(di.value).trim() : '';
-  const typed = zi ? String(zi.value).trim() : '';
+  const typed = zi ? String(zi.value) : '';
+  const manual = di ? String(di.value).trim() : '';
+  const dirTxt = PTADJ_IN.dir === 1 ? '加' : '减';
+  const hint = `一行一条：马各100 / 马100 / 平马100 / 8尾100　·　现在选的是「${dirTxt}」`;
   el.className = 'adj-prev';
-  if (!list.length){
-    if (typed){ el.className = 'adj-prev bad'; el.textContent = '没认出：打生肖（狗猴马）或尾数（8尾）'; }
-    else el.textContent = '打生肖/尾数＋斤数，点确定立即改';
+
+  if (!typed.trim() && manual === ''){ el.textContent = hint; return; }
+
+  /* 提交回执优先（号码没动过时） */
+  if (PTADJ_IN.msg && typed.trim() === String(PTADJ_IN.z || '').trim()){
+    el.className = 'adj-prev ok';
+    el.innerHTML = `<b>${PTADJ_IN.msg}</b>`;
     return;
   }
+
+  const r = parsePtAdjLines(typed, manual, PTADJ_IN.dir);
+  if (!r.rows.length){
+    if (r.bad.length){ el.className = 'adj-prev bad'; el.textContent = r.bad[0]; return; }
+    if (manual !== ''){ el.textContent = `手动 ${dirTxt} ${Math.abs(Number(manual)) || manual} 斤：再打生肖/尾数`; return; }
+    el.textContent = hint;
+    return;
+  }
+  if (r.bad.length){
+    el.className = 'adj-prev bad';
+    el.textContent = `${r.bad[0]}（整批没写入，改好再点确定）`;
+    return;
+  }
+
+  const map = ptDeltaMap(r);
+  const keys = Object.keys(map);
   const cur = z => (CURRENT && CURRENT.pt) ? (CURRENT.pt.get(z) || 0) : 0;
-  const who = list.length === 1 ? `平特 ${list[0]}` : `${list.length} 个平特（${list.join(' ')}）`;
-  if (raw === '' || !isFinite(Number(raw))){
-    if (PTADJ_IN.msg){ el.className = 'adj-prev ok'; el.innerHTML = `<b>${PTADJ_IN.msg}</b>`; return; }
-    el.innerHTML = `${who} 当前 <b>${Math.round(list.reduce((s, z) => s + cur(z), 0) * 100) / 100}</b> 斤`;
-    return;
-  }
-  const d = Number(raw);
-  const tot = Math.round(list.reduce((s, z) => s + Math.max(0, cur(z) + d), 0) * 100) / 100;
-  el.innerHTML = `${who} 每个 <b>${d > 0 ? '+' : ''}${d}</b> 斤 → 合计 <b>${tot}</b> 斤`;
-  if (list.every(z => cur(z) + d <= 0)) el.className = 'adj-prev bad';
+  const r2 = v => Math.round(v * 100) / 100;
+  const before = r2(keys.reduce((s, z) => s + cur(z), 0));
+  const after = r2(keys.reduce((s, z) => s + Math.max(0, cur(z) + map[z]), 0));
+  const ds = [...new Set(r.rows.map(x => x.d))];
+  const each = ds.length === 1 ? `每个 ${ds[0] > 0 ? '+' : ''}${ds[0]} 斤` : '每行不同量';
+  const fbTxt = r.fallbackUsed ? `　·　${r.fbCount} 行没写斤数，用手动 ${manual} 斤` : '';
+  el.innerHTML = `<b>${r.rows.length}</b> 行 · 共 <b>${keys.length}</b> 个平特 · ${each} → ${before} → <b>${after}</b> 斤${fbTxt}`;
+  if (r.rows.every(x => x.zs.every(z => cur(z) + x.d <= 0))) el.className = 'adj-prev bad';
 }
 
 function ptAdjFlash(txt){
@@ -1747,16 +2240,19 @@ function riskBlock(items, pingte, total, ptTotal){
 
   const danger = rows.filter(r => r.pl < 0);
   const warn = rows.filter(r => r.pl >= 0 && r.over > -10 && r.over <= 0);
+  const safe = rows.filter(r => r.pl >= 0 && r.over <= -10);
   const sorted = rows.slice().sort((a, b) => a.pl - b.pl);
 
   const tag = r => r.pl < 0
     ? '<span class="rk-tag d">超线</span>'
     : (r.over > -10 ? '<span class="rk-tag w">临界</span>' : '<span class="rk-tag s">安全</span>');
 
+  /* 复制用：整行照表格、号+超线照「09各81」（不带正负号） */
+  const catOf = r => (r.pl < 0 ? 'd' : (r.over > -10 ? 'w' : 's'));
   const body = sorted.map(r => {
     const cls = r.pl < 0 ? 'rk-danger' : (r.over > -10 ? 'rk-warn' : '');
     const overTxt = r.over > 0 ? `+${Math.round(r.over)}` : '—';
-    return `<tr class="${cls}">
+    return `<tr class="${cls}" data-rkcat="${catOf(r)}" data-rkover="${Math.round(r.over * 10) / 10}">
       <td class="mono"><b>${String(r.n).padStart(2, '0')}</b></td>
       <td class="z">${r.z}</td>
       <td class="mono">${r.b ? r.b + ' 斤' : '<span class="dim">—</span>'}</td>
@@ -1767,6 +2263,25 @@ function riskBlock(items, pingte, total, ptTotal){
       <td>${tag(r)}</td>
     </tr>`;
   }).join('');
+
+  const copyBar = `<div class="rk-copy">
+    <span class="cnt d">超线 <b>${danger.length}</b> 个</span>
+    <span class="cnt w">临界 <b>${warn.length}</b> 个</span>
+    <span class="cnt s">安全 <b>${safe.length}</b> 个</span>
+    <span class="sep"></span>
+    <span class="lb">复制</span>
+    <button type="button" data-rkcopy="d" title="复制全部超线号（按当前选中的格式）">超线 ${danger.length}</button>
+    <button type="button" data-rkcopy="w" title="复制全部临界号（按当前选中的格式）">临界 ${warn.length}</button>
+    <button type="button" data-rkcopy="s" title="复制全部安全号（按当前选中的格式）">安全 ${safe.length}</button>
+    <span class="sep"></span>
+    <span class="lb">格式</span>
+    <span class="rk-fmtgroup" role="group" aria-label="复制格式，整行 / 号+超线 二选一">
+      <button type="button" data-rkfmt="row" class="${RK_FMT === 'row' ? 'on' : ''}" aria-pressed="${RK_FMT === 'row' ? 'true' : 'false'}" title="号 / 生肖 / 注额 / 打平线 / 超线 / 该肖平特 / 开出盈亏 / 状态，一行一条">整行</button>
+      <button type="button" data-rkfmt="no" class="${RK_FMT === 'no' ? 'on' : ''}" aria-pressed="${RK_FMT === 'no' ? 'true' : 'false'}" title="只出「09各81」这种（不带正负号），一行一个号">号+超线</button>
+    </span>
+    <button type="button" class="rk-merge ${RK_MERGE ? 'on' : ''}" data-rkmerge="1" aria-pressed="${RK_MERGE ? 'true' : 'false'}" title="开关：开着的时候，「号+超线」会把超线一样的号合成一行，如「09.42各70」；换成整行也不会关掉它">同值合并</button>
+    <span class="msg" id="rkcopymsg"></span>
+  </div>`;
 
   /* 平特风控：一期开 8 个号，生肖、尾数各最多 8 个（去重），按最坏组合算 */
   const maxNumPay = rows.reduce((m, r) => Math.max(m, r.b * ODDS), 0);
@@ -1861,6 +2376,7 @@ function riskBlock(items, pingte, total, ptTotal){
       <small>盈亏${PT_IN_RISK ? '已' : '<b style="color:#b45309">未</b>'}按「最坏平特组合」扣减 · 单号打平线 <b style="color:#0f172a">${Math.floor(limit)}</b> 斤
         <span class="limit-expr">＝（台面总收 ${fmtMoney(R)} − 最坏平特赔额 ${fmtMoney(worstPt)}）÷ ${ODDS}　※赔额不含退本</span></small>
     </div>
+    ${copyBar}
     <div class="rk-scroll tbl-wrap"><table>
       <thead><tr>
         <th style="text-align:left">号</th><th>生肖</th><th>注额</th><th>打平线</th><th>超线</th><th>该肖平特</th><th>开出盈亏</th><th>状态</th>
@@ -1962,10 +2478,14 @@ function render(items, batches = [], pingte = []){
     : '';
   const adjBar = `<div class="adj-bar">
     <span class="lb">号码手动改</span>
-    <label>号码<input id="adjno" class="adj-in adj-n" type="text" maxlength="120" inputmode="numeric" placeholder="1 5 10 或 1-49" value="${esc(ADJ_IN.no)}" title="可一次填多个：空格 / 逗号分隔，或写 1-49、全部"></label>
-    <label>加 / 减<input id="adjdelta" class="adj-in adj-d" type="number" step="1" inputmode="decimal" placeholder="-95" value="${ADJ_IN.d}"></label>
+    <label>号码<textarea id="adjno" class="adj-in adj-n" rows="1" maxlength="2000" spellcheck="false" placeholder="一行一条：21各40" title="一行一条，号码和斤数写一起：21各40 / 09各30 / 31.33.43.44各20 / 1-10各5 / 全部各5；方向点右边「减 / 加」">${esc(ADJ_IN.no)}</textarea></label>
+    <span class="adj-dir" id="adjdir" role="group" aria-label="加还是减">
+      <button type="button" data-adjdir="-1" class="${ADJ_IN.dir === -1 ? 'on' : ''}" title="每行都按减算">− 减</button>
+      <button type="button" data-adjdir="1" class="${ADJ_IN.dir === 1 ? 'on' : ''}" title="每行都按加算">+ 加</button>
+    </span>
+    <label title="行里只写号码、没写斤数时用这个值；填 95 按上面「减 / 加」算，填 -95 直接减 95">手动<input id="adjdelta" class="adj-in adj-d" type="number" step="1" inputmode="decimal" placeholder="可留空" value="${esc(ADJ_IN.d)}"></label>
     <button type="button" id="adjok">确定</button>
-    <span class="adj-prev" id="adjprev">填号码和斤数，点确定立即改</span>
+    <span class="adj-prev" id="adjprev">一行一条：21各40 · 点「确定」立即改</span>
     ${adjChips ? `<span class="adj-list">${adjChips}</span>` : ''}
   </div>`;
 
@@ -2029,10 +2549,14 @@ function render(items, batches = [], pingte = []){
     : '';
   const ptAdjBar = `<div class="adj-bar">
     <span class="lb">平特手动改</span>
-    <label>生肖/尾<input id="ptadjz" class="adj-in adj-zs" type="text" maxlength="30" placeholder="狗猴马 / 8尾" value="${esc(PTADJ_IN.z)}" title="可一次多个：狗猴马、狗 猴 马、狗,猴,马，或尾数 8尾"></label>
-    <label>加 / 减<input id="ptadjdelta" class="adj-in adj-d" type="number" step="1" inputmode="decimal" placeholder="-200" value="${PTADJ_IN.d}"></label>
+    <label>生肖/尾<textarea id="ptadjz" class="adj-in adj-n pt-n" rows="1" maxlength="2000" spellcheck="false" placeholder="一行一条：马各100 / 马100" title="一行一条：马各100 / 马100 / 平马100 / 8尾100 / 马-100 / 狗猴马各20；方向点右边「减 / 加」，行里写了符号就以符号为准">${esc(PTADJ_IN.z)}</textarea></label>
+    <span class="adj-dir" id="ptadjdir" role="group" aria-label="加还是减">
+      <button type="button" data-ptadjdir="-1" class="${PTADJ_IN.dir === -1 ? 'on' : ''}" title="每行都按减算">− 减</button>
+      <button type="button" data-ptadjdir="1" class="${PTADJ_IN.dir === 1 ? 'on' : ''}" title="每行都按加算">+ 加</button>
+    </span>
+    <label title="行里只写生肖、没写斤数时用这个值；填 50 按上面「减 / 加」算，填 -50 直接减 50">手动<input id="ptadjdelta" class="adj-in adj-d" type="text" inputmode="decimal" placeholder="可留空" value="${esc(PTADJ_IN.d)}"></label>
     <button type="button" id="ptadjok">确定</button>
-    <span class="adj-prev" id="ptadjprev">打生肖＋斤数，点确定立即改</span>
+    <span class="adj-prev" id="ptadjprev">一行一条：狗各40 · 点「确定」立即改</span>
     ${ptAdjChips ? `<span class="adj-list">${ptAdjChips}</span>` : ''}
   </div>`;
 
@@ -2054,7 +2578,7 @@ function render(items, batches = [], pingte = []){
   `;
   out.innerHTML = html;
   /* 重渲染后把修正条的预览补回来（输入框的值是保留的，别让提示停在上一次的默认文案） */
-  try { adjPreview(); ptAdjPreview(); } catch(e){}
+  try { adjPreview(); ptAdjPreview(); fitAdjBox(); fitAdjBox('ptadjz'); } catch(e){}
 }
 
 /* ============ 5. 事件 ============ */
@@ -2403,44 +2927,86 @@ function syncPickUI(over){
 $('#out').addEventListener('input', e => {
   if (e.target.id === 'stlno'){ SETTLE_NO = e.target.value; paintSettle(); return; }
 
-  /* 单个号修正条：边填边预览「原值 → 新值」 */
-  if (e.target.id === 'adjno' || e.target.id === 'adjdelta'){
-    const ni = document.getElementById('adjno'), di = document.getElementById('adjdelta');
-    ADJ_IN.no = ni ? ni.value : '';
-    ADJ_IN.d = di ? di.value : '';
+  /* 号码修正条：边填边预览「原值 → 新值」；号码框支持多行 */
+  if (e.target.id === 'adjno'){
+    ADJ_IN.no = e.target.value;
+    ADJ_IN.msg = '';
+    fitAdjBox();
+    adjPreview();
+    return;
+  }
+
+  /* 旁边的手动斤数框：改了也立刻重算预览 */
+  if (e.target.id === 'adjdelta'){
+    ADJ_IN.d = e.target.value;
     ADJ_IN.msg = '';
     adjPreview();
     return;
   }
 
-  /* 单个平特修正条：边打边预览 */
+  /* 单个平特修正条：多行「狗各40」，边打边预览 */
   if (e.target.id === 'ptadjz' || e.target.id === 'ptadjdelta'){
     const zi = document.getElementById('ptadjz'), di = document.getElementById('ptadjdelta');
     PTADJ_IN.z = zi ? zi.value : '';
     PTADJ_IN.d = di ? di.value : '';
     PTADJ_IN.msg = '';
+    if (e.target.id === 'ptadjz') fitAdjBox('ptadjz');
     ptAdjPreview();
     return;
   }
 });
 
+/* 修正框里 Ctrl+Enter 直接确定（回车还是换行，方便一行一条） */
+$('#out').addEventListener('keydown', e => {
+  const hitNo = e.target.id === 'adjno' && e.key === 'Enter' && (e.ctrlKey || e.metaKey);
+  const hitD  = e.target.id === 'adjdelta' && e.key === 'Enter';
+  const hitPtNo = e.target.id === 'ptadjz' && e.key === 'Enter' && (e.ctrlKey || e.metaKey);
+  const hitPtD  = e.target.id === 'ptadjdelta' && e.key === 'Enter';
+  if (hitNo || hitD || hitPtNo || hitPtD){
+    e.preventDefault();
+    const b = document.getElementById((hitPtNo || hitPtD) ? 'ptadjok' : 'adjok');
+    if (b) b.click();
+  }
+});
+
 /* 号码修正：点「确定」把加减量叠到这些号（支持批量）；点橙chip撤销单个，点「全部撤销」清空 */
 $('#out').addEventListener('click', e => {
+  /* 先看是不是点了「减 / 加」开关 —— 只换方向，不重渲染 */
+  const dirBtn = e.target.closest ? e.target.closest('[data-adjdir]') : null;
+  if (dirBtn){
+    setAdjDir(Number(dirBtn.dataset.adjdir));
+    ADJ_IN.msg = '';
+    adjPreview();
+    return;
+  }
   const okBtn = e.target.closest ? e.target.closest('#adjok') : null;
   if (okBtn){
-    const ni = document.getElementById('adjno'), di = document.getElementById('adjdelta');
-    const list = parseNoList(ni ? ni.value : '');
-    const raw = di ? String(di.value).trim() : '';
-    if (!list.length){ adjFlash('先填号码，多个用空格/逗号分开，也可写 1-49 或 全部'); return; }
-    if (raw === '' || !isFinite(Number(raw))){ adjFlash('填要加/减多少斤，减写负数，如 -95'); return; }
-    const d = Math.round(Number(raw) * 100) / 100;
-    if (d === 0){ adjFlash('加减量不能是 0'); return; }
-    list.forEach(no => {
-      const next = Math.round(((ADJUST[no] || 0) + d) * 100) / 100;
+    const ni = document.getElementById('adjno');
+    const di = document.getElementById('adjdelta');
+    const typed = ni ? String(ni.value) : '';
+    const manual = di ? String(di.value).trim() : '';
+    const r = parseAdjLines(typed, manual, ADJ_IN.dir);
+    if (!r.rows.length){
+      adjFlash(r.bad[0] || '按「21各40」写，一行一条；或只写号码，在旁边「手动」填斤数');
+      return;
+    }
+    if (r.bad.length){
+      adjFlash(`${r.bad[0]}（整批没写入，改好再点确定）`);
+      return;
+    }
+    const dmap = adjDeltaMap(r);
+    const keys = Object.keys(dmap);
+    keys.forEach(k => {
+      const no = +k;
+      const next = Math.round(((ADJUST[no] || 0) + dmap[k]) * 100) / 100;
       if (next === 0) delete ADJUST[no]; else ADJUST[no] = next;
     });
     saveAdjust();
-    ADJ_IN = {no: ni ? String(ni.value).trim() : '', d: '', msg: `✓ 写入 ${list.length} 个号 · 每个 ${d > 0 ? '+' : ''}${d} 斤`};
+    const ds = [...new Set(r.rows.map(x => x.d))];
+    const tip = (r.rows.length === 1 && ds.length === 1)
+      ? `· 每个 ${ds[0] > 0 ? '+' : ''}${ds[0]} 斤`
+      : `· ${r.rows.length} 行`;
+    ADJ_IN = {no: typed.trim(), d: manual, dir: ADJ_IN.dir, msg: `✓ 写入 ${keys.length} 个号 ${tip}`};
     const y = window.scrollY || document.documentElement.scrollTop || 0;
     recompute();
     window.scrollTo(0, y);
@@ -2450,7 +3016,7 @@ $('#out').addEventListener('click', e => {
   if (clrBtn){
     ADJUST = {};
     saveAdjust();
-    ADJ_IN = {no: '', d: ''};
+    resetAdjIn();
     const y = window.scrollY || document.documentElement.scrollTop || 0;
     recompute();
     window.scrollTo(0, y);
@@ -2462,30 +3028,49 @@ $('#out').addEventListener('click', e => {
     if (!isFinite(no)) return;
     delete ADJUST[no];
     saveAdjust();
-    ADJ_IN = {no: '', d: ''};
+    resetAdjIn();
     const y = window.scrollY || document.documentElement.scrollTop || 0;
     recompute();
     window.scrollTo(0, y);
   }
 });
 
-/* 平特修正：点「确定」把加减量叠到这些生肖（支持批量）；点橙chip撤销单个，点「全部撤销」清空 */
+/* 平特修正：点「确定」把加减量叠到这些生肖（支持批量、多行）；点橙chip撤销单个，点「全部撤销」清空 */
 $('#out').addEventListener('click', e => {
+  /* 先看是不是点了「减 / 加」开关 —— 只换方向，不重渲染 */
+  const pDirBtn = e.target.closest ? e.target.closest('[data-ptadjdir]') : null;
+  if (pDirBtn){
+    setPtAdjDir(Number(pDirBtn.dataset.ptadjdir));
+    PTADJ_IN.msg = '';
+    ptAdjPreview();
+    return;
+  }
   const okBtn = e.target.closest ? e.target.closest('#ptadjok') : null;
   if (okBtn){
     const zi = document.getElementById('ptadjz'), di = document.getElementById('ptadjdelta');
-    const list = parseZodiacList(zi ? zi.value : '');
-    const raw = di ? String(di.value).trim() : '';
-    if (!list.length){ ptAdjFlash('打生肖（狗猴马）或尾数（8尾）'); return; }
-    if (raw === '' || !isFinite(Number(raw))){ ptAdjFlash('填要加/减多少斤，减写负数，如 -200'); return; }
-    const d = Math.round(Number(raw) * 100) / 100;
-    if (d === 0){ ptAdjFlash('加减量不能是 0'); return; }
-    list.forEach(z => {
-      const next = Math.round(((PT_ADJUST[z] || 0) + d) * 100) / 100;
+    const typed = zi ? String(zi.value) : '';
+    const manual = di ? String(di.value).trim() : '';
+    const r = parsePtAdjLines(typed, manual, PTADJ_IN.dir);
+    if (!r.rows.length){
+      ptAdjFlash(r.bad[0] || '按「狗各40」写，一行一条；或只写生肖，在旁边「手动」填斤数');
+      return;
+    }
+    if (r.bad.length){
+      ptAdjFlash(`${r.bad[0]}（整批没写入，改好再点确定）`);
+      return;
+    }
+    const dmap = ptDeltaMap(r);
+    const keys = Object.keys(dmap);
+    keys.forEach(z => {
+      const next = Math.round(((PT_ADJUST[z] || 0) + dmap[z]) * 100) / 100;
       if (next === 0) delete PT_ADJUST[z]; else PT_ADJUST[z] = next;
     });
     savePtAdjust();
-    PTADJ_IN = {z: zi ? String(zi.value).trim() : '', d: '', msg: `✓ 写入 ${list.length} 个平特 · 每个 ${d > 0 ? '+' : ''}${d} 斤`};
+    const ds = [...new Set(r.rows.map(x => x.d))];
+    const tip = (r.rows.length === 1 && ds.length === 1)
+      ? `· 每个 ${ds[0] > 0 ? '+' : ''}${ds[0]} 斤`
+      : '· 多行';
+    PTADJ_IN = {z: '', d: manual, dir: PTADJ_IN.dir, msg: `✓ 写入 ${keys.length} 个平特 ${tip}`};
     const y = window.scrollY || document.documentElement.scrollTop || 0;
     recompute();
     window.scrollTo(0, y);
@@ -2495,7 +3080,7 @@ $('#out').addEventListener('click', e => {
   if (pClr){
     PT_ADJUST = {};
     savePtAdjust();
-    PTADJ_IN = {z: '', d: ''};
+    PTADJ_IN = {z: '', d: '', dir: PTADJ_IN.dir, msg: ''};
     const y = window.scrollY || document.documentElement.scrollTop || 0;
     recompute();
     window.scrollTo(0, y);
@@ -2507,7 +3092,7 @@ $('#out').addEventListener('click', e => {
     if (!z) return;
     delete PT_ADJUST[z];
     savePtAdjust();
-    PTADJ_IN = {z: '', d: ''};
+    PTADJ_IN = {z: '', d: '', dir: PTADJ_IN.dir, msg: ''};
     const y = window.scrollY || document.documentElement.scrollTop || 0;
     recompute();
     window.scrollTo(0, y);
@@ -2524,6 +3109,60 @@ $('#out').addEventListener('click', e => {
   recompute();
   window.scrollTo(0, y);
 });
+
+/* 单号风险表：复制（超线 / 临界 / 安全）＋ 切换复制格式（整行 / 号+超线 / 同值合并） */
+let FMT_MSG_T = null;
+function fmtSay(txt){
+  const msg = document.getElementById('rkcopymsg');
+  if (!msg) return;
+  msg.className = 'msg';
+  msg.textContent = txt;
+  if (FMT_MSG_T) clearTimeout(FMT_MSG_T);
+  FMT_MSG_T = setTimeout(() => { try { msg.textContent = ''; } catch(err){} }, 2600);
+}
+
+$('#out').addEventListener('click', e => {
+  const cp = e.target.closest ? e.target.closest('[data-rkcopy]') : null;
+  if (cp){ copyRiskRows(cp.dataset.rkcopy); return; }
+
+  /* 同值合并：独立开关，不跟格式二选一混在一起，点别的格式也不会把它关掉 */
+  const mg = e.target.closest ? e.target.closest('[data-rkmerge]') : null;
+  if (mg){
+    RK_MERGE = !RK_MERGE;
+    /* 打开时若停在「整行」，自动切到「号+超线」，让合并立刻能看见效果 */
+    if (RK_MERGE && RK_FMT === 'row') RK_FMT = 'no';
+    try {
+      LSX.setItem('liuhe_rkmerge_v1', RK_MERGE ? '1' : '0');
+      LSX.setItem('liuhe_rkfmt_v1', RK_FMT);
+    } catch(err){}
+    paintFmt();
+    fmtSay(RK_MERGE ? '同值合并：开（超线一样的号合一行，如 09.42各70）' : '同值合并：关（一个号一行）');
+    return;
+  }
+
+  const fm = e.target.closest ? e.target.closest('[data-rkfmt]') : null;
+  if (!fm) return;
+  const f = fm.dataset.rkfmt;
+  RK_FMT = (f === 'no') ? 'no' : 'row';
+  try { LSX.setItem('liuhe_rkfmt_v1', RK_FMT); } catch(err){}
+  paintFmt();
+  fmtSay(RK_FMT === 'no'
+    ? (RK_MERGE ? '格式：号＋超线，同值合并开着 → 09.42各70' : '格式：号＋超线，如 09各81')
+    : (RK_MERGE ? '格式：整行（整行不合并，同值合并仍开着）' : '格式：整行，带表头，可直接贴 Excel'));
+});
+
+/* 刷新格式区的高亮：格式按钮二选一，同值合并独立 */
+function paintFmt(){
+  document.querySelectorAll('.rk-copy [data-rkfmt]').forEach(b => {
+    const on = b.dataset.rkfmt === RK_FMT;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  document.querySelectorAll('.rk-copy [data-rkmerge]').forEach(b => {
+    b.classList.toggle('on', RK_MERGE);
+    b.setAttribute('aria-pressed', RK_MERGE ? 'true' : 'false');
+  });
+}
 
 /* 平特多选：点一下选中，再点取消；生肖、尾数各最多 8 个 */
 $('#out').addEventListener('click', e => {
@@ -2589,8 +3228,8 @@ $('#clear').addEventListener('click', () => {
   HISTORY = [];
   ADJUST = {};
   PT_ADJUST = {};
-  ADJ_IN = {no: '', d: ''};
-  PTADJ_IN = {z: '', d: ''};
+  ADJ_IN = {no: '', d: '', dir: ADJ_IN.dir, msg: ''};
+  PTADJ_IN = {z: '', d: '', dir: PTADJ_IN.dir, msg: ''};
   saveAdjust();
   savePtAdjust();
   persistHistory();
