@@ -3,7 +3,7 @@
    页面导航走「缓存优先 + 后台更新」：有缓存立刻出画面（不会再等网络超时转圈），
    同时后台拉新版写回缓存，下次打开就是新的。
    改了 index.html 要把 CACHE 版本号 +1，否则手机还读旧缓存。 */
-const CACHE = 'liuhe-v7';
+const CACHE = 'liuhe-v8';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon-180.png'];
 
 self.addEventListener('install', e => {
